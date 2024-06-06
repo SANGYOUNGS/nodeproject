@@ -17,3 +17,5 @@ connectDB.then((client)=>{
     })
   console.log(err)
 })
+
+app.use('/clothes', require('./routes/clothes.js') )

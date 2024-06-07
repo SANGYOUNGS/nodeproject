@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema } from "mongoose";
 
 const UserSchema = new Schema(
   {
@@ -39,17 +39,11 @@ const UserSchema = new Schema(
       required: false,
       default: "설명이 아직 없습니다. 추가해 주세요.",
     },
-    role: {
-      type: String,
-      required: false,
-      default: 'basic-user',
-    },
   },
   {
     timestamps: true,
   }
 );
 
-const UserModel = model("User", UserSchema);
 
-export { UserModel };
+export { UserSchema };

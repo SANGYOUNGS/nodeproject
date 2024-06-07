@@ -29,7 +29,7 @@ const UserSchema = new Schema(
                 address: String,
             },
             {
-                _id: false,
+                id: false,
             }
         ),
         required: false,
@@ -38,6 +38,11 @@ const UserSchema = new Schema(
       type: String,
       required: false,
       default: "설명이 아직 없습니다. 추가해 주세요.",
+    },
+    role: {
+      type: String,
+      required: false,
+      default: 'basic-user',
     },
   },
   {

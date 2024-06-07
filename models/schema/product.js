@@ -2,22 +2,30 @@ import { Schema } from "mongoose";
 
 const ProductSchema = new mongoose.Schema(
     {
+        productId: {
+            type: String,
+            required: true,
+        },
         name: {
             type: String,
             required: true,
-          },
-          size: {
+        },
+        description:{
             type: String,
             required: true,
-          },
-          color: {
+        },
+        color: {
             type: String,
             required: true,
-          },
-          price: {
-            type: Number,
-            required: true,
-          },
+        },
+        brand: {
+            type: String,
+            require: true,
+        },
+        category: {
+            type: ???
+        },
+        variants: [VariantSchema];               
     }
 );
 

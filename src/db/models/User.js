@@ -1,6 +1,9 @@
-import { UserModel } from "../schemas/user";
+import { UserSchema } from "../schemas/user";
+import { model } from 'mongoose';
 
-export class User {
+const User = model('users', UserSchema);
+
+export class UserModel {
   
   async findAll() {
     // Mongoose 모델의 find 함수를 이용하여 목록 추출 후 반환
@@ -8,21 +11,21 @@ export class User {
     return users;
   }
   
-  async findById({ user_id }) {
+  async findById({ userId }) {
     // 입력 받은 user_id를 db에서 검색하여 사용자 추출
-    const user = await UserModel.findOne({ id: user_id });
+    const user = await User.findOne({ id: userId });
     return user;
   }
   
   async create({ newUser }) {
-    const createdNewUser = await UserModel.create(newUser);
+    const createdNewUser = await User.create(newUser);
     return createdNewUser;
   }
   
   
   async findByEmail({ email }) {
     // 입력 받은 email을 db에서 검색하여 사용자 추출
-    const user = await UserModel.findOne({ email });
+    const user = await User.findOne({ email });
     return user;
   }
   
@@ -30,22 +33,22 @@ export class User {
     const filter = { email: useremail };
     const option = { returnOriginal: false };
 
-    const updatedUser = await UserModel.findOneAndUpdate(filter, update, option);
+    const updatedUser = await User.findOneAndUpdate(filter, update, option);
     return updatedUser;
   }
   
   async findUser(userName) {
-    const user = await UserModel.findOne({ Name: userName });
+    const user = await User.findOne({ name: userName });
     return user;
   }
   
   async delete(useremail) {
-    await UserModel.findOneAndDelete({ email: useremail });
+    await User.findOneAndDelete({ email: useremail });
     return;
   }
 
 }
 
-const user = new User();
+const userModel = new UserModel();
 
-export { user };
+export { userModel };

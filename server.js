@@ -1,21 +1,40 @@
-const express = require('express')
-const app = express()
+const express = require("express");
+const mongoose = require("mongoose");
+const app = express();
+require("dotenv").config();
 
-require('dotenv').config()
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.DB_URL, { tls: true });
+    console.log("DB 연결 성공");
+  } catch (err) {
+    console.error("DB 연결 실패:", err);
+    throw err;
+  }
+};
 
+const startServer = () => {
+  const PORT = process.env.PORT || 8000;
+  app.listen(PORT, () => {
+    console.log(`http://localhost:${PORT} 에서 서버 실행중`);
+  });
+};
 
+app.use("/clothes", require("./routes/clothes.js"));
 
-let connectDB = require('./db.js')
+app.get("/", (req, res) => {
+  res.send("Welcome to the Clothes API");
+});
 
-let db
-connectDB.then((client)=>{
-  console.log('DB연결성공')
-  db = client.db(' ')
-}).catch((err)=>{
-    app.listen(process.env.PORT, () => {
-        console.log('http://localhost:8080 에서 서버 실행중')
-    })
-  console.log(err)
-})
+const init = async () => {
+  try {
+    await connectDB();
+  } catch (err) {
+  } finally {
+    startServer();
+  }
+};
 
-app.use('/clothes', require('./routes/clothes.js') )
+init();
+
+module.exports = app;

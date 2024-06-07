@@ -20,11 +20,8 @@ const startServer = () => {
   });
 };
 
-app.use("/clothes", require("./routes/clothes.js"));
-
 app.get("/", (req, res) => {
-  res.send("Welcome to the Clothes API");
-});
+  res.send("Welcome to the Clothes API
 
 const init = async () => {
   try {

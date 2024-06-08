@@ -1,7 +1,8 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import registerRouter from './routes/register.js'; 
+import express from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import registerRouter from "./routes/register.js";
+import ordersRouter from "./routes/orders.js";
 
 // 환경 변수 로드
 dotenv.config();
@@ -27,6 +28,7 @@ const startServer = () => {
 
 app.use(express.json()); // JSON 본문 파싱 미들웨어 추가
 app.use("/api/register", registerRouter);
+app.use("/api/orders", ordersRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Clothes API");
@@ -45,5 +47,3 @@ const init = async () => {
 init();
 
 export default app;
-
-

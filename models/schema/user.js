@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 import { Schema, model } from "mongoose";
 
 const UserSchema = new Schema(
@@ -16,20 +16,20 @@ const UserSchema = new Schema(
       required: true,
     },
     phoneNumber: {
-        type: Number,
-        required: false,
+      type: Number,
+      required: false,
     },
     address: {
-        type: new Schema(
-            {
-                postalCode: String,
-                address: String,
-            },
-            {
-                _id: false,
-            }
-        ),
-        required: false,
+      type: new Schema(
+        {
+          postalCode: String,
+          address: String,
+        },
+        {
+          _id: false,
+        }
+      ),
+      required: false,
     },
     description: {
       type: String,
@@ -42,7 +42,6 @@ const UserSchema = new Schema(
   }
 );
 
-const User = model('User', UserSchema);
+const User = model("User", UserSchema);
 
 export default User;
-

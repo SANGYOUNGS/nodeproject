@@ -1,7 +1,7 @@
+import mongoose from 'mongoose';
 import { UserSchema } from "../schemas/user";
-import { model } from 'mongoose';
 
-const User = model('users', UserSchema);
+const User = mongoose.model('users', UserSchema);
 
 export class UserModel {
   
@@ -13,7 +13,7 @@ export class UserModel {
   
   async findById({ userId }) {
     // 입력 받은 user_id를 db에서 검색하여 사용자 추출
-    const user = await User.findOne({ id: userId });
+    const user = await User.findOne({ _id: userId });
     return user;
   }
   
@@ -31,7 +31,7 @@ export class UserModel {
   
   async update({ useremail, update }) {
     const filter = { email: useremail };
-    const option = { returnOriginal: false };
+    const option = { new: true };  //업데이트 정보 반환
 
     const updatedUser = await User.findOneAndUpdate(filter, update, option);
     return updatedUser;

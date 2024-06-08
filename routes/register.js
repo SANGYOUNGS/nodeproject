@@ -1,5 +1,5 @@
 import express from "express";
-import User from "../models/schema/user";
+import UserModel from "../models/schema/user.js";
 import bcrypt from "bcryptjs";
 
 const router = express.Router();
@@ -8,12 +8,12 @@ router.post("/", async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
-    let user = await User.findOne({ email });
+    let user = await UserModel.findOne({ email });
     if (user) {
       return res.status(400).json({ errors: [{ msg: "User already exists" }] });
     }
 
-    user = new User({
+    user = new UserModel({
       name,
       email,
       password,
@@ -32,3 +32,4 @@ router.post("/", async (req, res) => {
 });
 
 export default router;
+

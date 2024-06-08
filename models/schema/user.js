@@ -5,6 +5,7 @@ const UserSchema = new Schema(
     id: {
       type: String,
       required: true,
+      default: () => Math.random().toString(36).substr(2, 9), // 서버에서 자동 생성
     },
     email: {
       type: String,
@@ -19,20 +20,20 @@ const UserSchema = new Schema(
       required: true,
     },
     phoneNumber: {
-        type: String,
-        required: false,
+      type: String,
+      required: false,
     },
     address: {
-        type: new Schema(
-            {
-                postalCode: String,
-                address: String,
-            },
-            {
-                _id: false,
-            }
-        ),
-        required: false,
+      type: new Schema(
+        {
+          postalCode: String,
+          address: String,
+        },
+        {
+          _id: false,
+        }
+      ),
+      required: false,
     },
     description: {
       type: String,
@@ -47,4 +48,4 @@ const UserSchema = new Schema(
 
 const UserModel = model("User", UserSchema);
 
-export { UserModel };
+export default UserModel;

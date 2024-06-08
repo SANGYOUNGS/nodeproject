@@ -1,7 +1,13 @@
-const express = require("express");
-const mongoose = require("mongoose");
+import express from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import registerRouter from "./routes/register.js";
+import ordersRouter from "./routes/orders.js";
+
+// 환경 변수 로드
+dotenv.config();
+
 const app = express();
-require("dotenv").config();
 
 const connectDB = async () => {
   try {
@@ -20,7 +26,9 @@ const startServer = () => {
   });
 };
 
-app.use("/clothes", require("./routes/clothes.js"));
+app.use(express.json()); // JSON 본문 파싱 미들웨어 추가
+app.use("/api/register", registerRouter);
+app.use("/api/orders", ordersRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Clothes API");
@@ -30,6 +38,7 @@ const init = async () => {
   try {
     await connectDB();
   } catch (err) {
+    console.error("초기화 중 오류 발생:", err);
   } finally {
     startServer();
   }
@@ -37,4 +46,4 @@ const init = async () => {
 
 init();
 
-module.exports = app;
+export default app;

@@ -2,11 +2,6 @@ import { Schema, model } from "mongoose";
 
 const UserSchema = new Schema(
   {
-    id: {
-      type: String,
-      required: true,
-      default: () => Math.random().toString(36).substr(2, 9), // 서버에서 자동 생성
-    },
     email: {
       type: String,
       required: true,

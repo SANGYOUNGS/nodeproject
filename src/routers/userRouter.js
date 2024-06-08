@@ -12,7 +12,7 @@ userRouter.post("/user-login",
     const { email, password } = req.body;
 
     if(!email || !password) {
-      return res.status(400).send('이메일과 비밀번호를 확인해 주세요.');
+      res.status(400).send('이메일과 비밀번호를 확인해 주세요.');
     }
 
     // 위 데이터를 이용하여 유저 db에서 유저 찾기
@@ -43,7 +43,7 @@ userRouter.get(
         const { id } = req.params;
 
         if (!id) {
-          return res.status(400).send('id를 확인해 주세요.');
+          res.status(400).send('id를 확인해 주세요.');
         }
 
       const user = await userService.getUserInfo({ id });
@@ -57,14 +57,14 @@ userRouter.put(
   async (req, res) => {
     try {
     if(is.emptyObject(req.body)) {
-      return res.status(400).send('정보를 입력해 주세요.');
+      res.status(400).send('정보를 입력해 주세요.');
     }
 
     const { id } = req.params;
     const { email, name, password, address, phoneNumber, role, currentPassword } = req.body;
 
     if(!currentPassword) {
-      return res.status(400).send('비밀번호를 입력해 주세요.');
+      res.status(400).send('비밀번호를 입력해 주세요.');
     }
 
     const userInfoRequired = { id, currentPassword };
@@ -87,7 +87,7 @@ userRouter.put(
         const { password: currentPassword } = req.body;
 
       if(!currentPassword) {
-        return res.status(400).send('비밀번호를 입력해 주세요.');
+        res.status(400).send('비밀번호를 입력해 주세요.');
       }
 
       const userInfoRequired = { id , currentPassword};

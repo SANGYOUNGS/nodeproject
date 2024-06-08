@@ -1,4 +1,5 @@
-import { Schema } from "mongoose";
+import mongoose from 'mongoose';
+import { Schema, model } from 'mongoose';
 
 const UserSchema = new Schema(
   {
@@ -15,21 +16,24 @@ const UserSchema = new Schema(
       required: true,
     },
     phoneNumber: {
-        type: String,
+      type: Number,
+      required: false,
     },
     address: {
-        type: new Schema(
-            {
-                postalCode: String,
-                address: String,
-            },
-            {
-                _id: false,
-            }
-        ),
+      type: new Schema(
+        {
+          postalCode: String,
+          address: String,
+        },
+        {
+          _id: false,
+        }
+      ),
+      required: false,
     },
     description: {
       type: String,
+      required: false,
       default: "설명이 아직 없습니다. 추가해 주세요.",
     },
   },
@@ -38,5 +42,6 @@ const UserSchema = new Schema(
   }
 );
 
+const User = model("User", UserSchema);
 
-export { UserSchema };
+export default User;

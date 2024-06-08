@@ -51,4 +51,4 @@ export class UserModel {
 
 const userModel = new UserModel();
 
-export { userModel };
+module.exports = userModel;

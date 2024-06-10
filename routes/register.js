@@ -4,13 +4,13 @@ import bcrypt from "bcryptjs";
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/api/register", async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
     let user = await UserModel.findOne({ email });
     if (user) {
-      return res.status(400).json({ errors: [{ msg: "User already exists" }] });
+      return res.status(400).json({ errors: [{ msg: "이미 등록된 이메일 입니다" }] });
     }
 
     user = new UserModel({

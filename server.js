@@ -5,6 +5,7 @@ import cors from "cors";
 import registerRouter from "./routes/register.js";
 import ordersRouter from "./routes/orders.js";
 import adminRouter from "./routes/admin.js";
+import userRouter from "./routes/user.js";
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.use(express.json());
 app.use("/api/register", registerRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/orders", ordersRouter);
+app.use("/api/users", userRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Clothes API");

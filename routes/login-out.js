@@ -23,12 +23,11 @@ router.post('/login', async (req, res, next) => {
     error.statusCode = 400;
     throw error;
     }
-    const secretKey = process.env.JWT_SECRET_KEY || 'jwt-secret-key';
     const token = jwt.sign(
       { em: "team2@gmail.com",
         ro: "user" 
       }, 
-        secretKey, 
+    secretKey, 
         {expriresIn: "1h" }
       );
 

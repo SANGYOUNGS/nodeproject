@@ -28,14 +28,15 @@ const signIn = async (req, res, next) => {
   }
 };
 
-// 이메일로 사용자 조회
-const getFirstUser = async (req, res, next) => {
+const getUserByToken = async (req, res, next) => {
   try {
-    console.log("첫 번째 사용자 조회 시도 중");
+    const token = req.headers.authorization.split(" ")[1];
+    const secretKey = process.env.JWT_SECRET_KEY || "jwt-secret-key";
 
-    const user = await User.findOne().sort({ _id: 1 }); // 첫 번째 사용자 조회
-    console.log(`조회된 사용자: ${user}`);
+    const decodedToken = jwt.verify(token, secretKey);
+    const userId = decodedToken.userId;
 
+    const user = await User.findById(userId);
     if (!user) {
       const error = new Error("사용자를 찾을 수 없습니다.");
       error.statusCode = 404;
@@ -110,7 +111,7 @@ const logout = async (req, res, next) => {
 
 export default {
   signIn,
-  getFirstUser,
+  getUserByToken,
   updateUser,
   deleteUser,
   logout,

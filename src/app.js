@@ -1,27 +1,25 @@
-// import cors from "cors";
-// import express from "express";
-// import { userRouter } from "./routers/userRouter";
+import cors from "cors";
+import express from "express";
+import mongoose from 'mongoose';
+import router from "../routers/userRouter.js";
 
-// const app = express();
+const app = express();
+const PORT = process.env.PORT || 8000;
 
-// // CORS 에러 방지
-// app.use(cors());
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUriParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
+});
+// CORS 에러 방지
+app.use(cors());
 
-// // express 기본 제공 middleware
-// // express.json(): POST 등의 요청과 함께 오는 json형태의 데이터를 인식하고 핸들링할 수 있게 함.
-// // express.urlencoded: 주로 Form submit 에 의해 만들어지는 URL-Encoded 형태의 데이터를 인식하고 핸들링할 수 있게 함.
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
+// express 기본 제공 middleware
+// express.json(): POST 등의 요청과 함께 오는 json형태의 데이터를 인식하고 핸들링할 수 있게 함.
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use('/api', router);
 
-// // 기본 페이지
-// app.get("/", (req, res) => {
-//   res.send("안녕하세요, BACKEND API 입니다.");
-// });
+app.listen(PORT, () => console.log('Server running on port ${PORT}'));
 
-// // router, service 구현 (userAuthRouter는 맨 위에 있어야 함.)
-// app.use(userRouter);
-
-// // 순서 중요 (router 에서 next() 시 아래의 에러 핸들링  middleware로 전달됨)
-// app.use(errorMiddleware);
-
-// export { app };
+export default app;

@@ -1,13 +1,14 @@
 import mongoose from 'mongoose';
-import { Schema, model } from 'mongoose';
 
-const guestSchema = new Schema(
+const { Schema } = mongoose;
+
+const GuestSchema = new Schema(
     {
      guestEmail: {
         type: String,
         required: true,
      },
-     guestPw: {
+     guestPassword: {
         type: String,
         required: true,
      },
@@ -15,20 +16,20 @@ const guestSchema = new Schema(
         type: String,
         required: true,
      },
-     guestAdd: {
+     guestAddress: {
         type: String,
         required: false,
      },
-     guestNum: {
+     guestNumber: {
         type: Number,
         required: true,
      },
-     orderNum: {
+     orderNumber: {
         type: Number,
         required: false,
      }
 });
 
-const Guest = model("guest", guestSchema);
+const Guest = mongoose.model("Guest", GuestSchema);
 
 export default Guest; 

@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
 import registerRouter from "./routes/register.js";
 import ordersRouter from "./routes/orders.js";
 import adminRouter from "./routes/admin.js";
@@ -27,12 +28,12 @@ const startServer = () => {
   });
 };
 
-app.use(express.json()); // JSON 본문 파싱 미들웨어 추가
-app.use("/", registerRouter, adminRouter);
+app.use(cors());
+
+app.use(express.json());
+app.use("/api/register", registerRouter);
+app.use("/api/admin", adminRouter);
 app.use("/api/orders", ordersRouter);
-
-
-
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Clothes API");

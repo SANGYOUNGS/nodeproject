@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, phoneNumber } = req.body;
 
   try {
     let user = await UserModel.findOne({ email });
@@ -19,6 +19,7 @@ router.post("/", async (req, res) => {
       name,
       email,
       password,
+      phoneNumber
     });
 
     const salt = await bcrypt.genSalt(10);

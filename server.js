@@ -6,14 +6,13 @@ import registerRouter from "./routes/register.js";
 import ordersRouter from "./routes/orders.js";
 import adminRouter from "./routes/admin.js";
 
-// 환경 변수 로드
 dotenv.config();
 
 const app = express();
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.DB_URL, { tls: true });
+    await mongoose.connect(process.env.DB_URL, {});
     console.log("DB 연결 성공");
   } catch (err) {
     console.error("DB 연결 실패:", err);
@@ -29,7 +28,6 @@ const startServer = () => {
 };
 
 app.use(cors());
-
 app.use(express.json());
 app.use("/api/register", registerRouter);
 app.use("/api/admin", adminRouter);

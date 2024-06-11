@@ -30,20 +30,20 @@ router.post("/login", async (req, res, next) => {
       { expiresIn: "1h" }
     );
 
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 3600000,
+      sameSite: "Lax",
+    };
+
     if (user.role === "admin") {
       res
-        .cookie("adminCookie", token, {
-          httpOnly: true,
-          secure: true,
-          path: "/admin",
-        })
+        .cookie("adminCookie", token, cookieOptions)
         .json({ message: "로그인 성공!", token });
     } else {
       res
-        .cookie("userCookie", token, {
-          httpOnly: true,
-          secure: true,
-        })
+        .cookie("userCookie", token, cookieOptions)
         .json({ message: "로그인 성공!", token });
     }
   } catch (err) {

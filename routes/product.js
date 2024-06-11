@@ -1,93 +1,110 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import Product from '../models/schema/product.js';
-import Brand from '../models/schema/brand.js';
-import Category from '../models/schema/category.js';
-import Variant from '../models/schema/variant.js'; // Variant ¸ðµ¨ Ãß°¡
+import express from "express";
+import mongoose from "mongoose";
+import Product from "../models/schema/product.js";
+import Brand from "../models/schema/brand.js";
+import Category from "../models/schema/category.js";
+import Variant from "../models/schema/variant.js"; // Variant ï¿½ï¿½ ï¿½ß°ï¿½
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
-    try {
-        const products = await Product.find().populate('brand').populate('category');
-        res.status(200).json(products);
-    } catch (error) {
-        console.error('Error fetching products:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ Á¦Ç°À» °¡Á®¿Ã ¼ö ¾ø½À´Ï´Ù.' });
-    }
+router.get("/", async (req, res) => {
+  try {
+    const products = await Product.find()
+      .populate("brand")
+      .populate("category");
+    res.status(200).json(products);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({ message: "ì œí’ˆ ëª©ë¡ì„ ë¶ˆëŸ¬ì˜¬ ìˆ˜ ì—†ìŠµë‹ˆë‹¤." });
+  }
 });
 
-router.get('/:productId', async (req, res) => {
-    const { productId } = req.params;
+router.get("/:productId", async (req, res) => {
+  const { productId } = req.params;
 
-    try {
-        const product = await Product.findById(productId).populate('brand').populate('category');
+  try {
+    const product = await Product.findById(productId)
+      .populate("brand")
+      .populate("category");
 
-        if (!product) {
-            return res.status(404).json({ message: 'Á¦Ç°À» Ã£À» ¼ö ¾ø½À´Ï´Ù.' });
-        }
-
-        res.status(200).json(product);
-    } catch (error) {
-        console.error('Error fetching product:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ Á¦Ç°À» °¡Á®¿Ã ¼ö ¾ø½À´Ï´Ù.' });
+    if (!product) {
+      return res.status(404).json({ message: "ï¿½ï¿½Ç°ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½." });
     }
+
+    res.status(200).json(product);
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    res
+      .status(500)
+      .json({ message: "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½." });
+  }
 });
 
-router.post('/', async (req, res) => {
-    const { name, brand, category, description, longdescription, price } = req.body;
+router.post("/", async (req, res) => {
+  const { name, brand, category, description, longdescription, price } =
+    req.body;
 
-    const newProduct = new Product({
-        name,
-        brand,
-        category,
-        description,
-        longdescription,
-        price
-    });
+  const newProduct = new Product({
+    name,
+    brand,
+    category,
+    description,
+    longdescription,
+    price,
+  });
 
-    try {
-        const savedProduct = await newProduct.save();
-        res.status(201).json(savedProduct);
-    } catch (error) {
-        console.error('Error creating product:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ Á¦Ç°À» »ý¼ºÇÒ ¼ö ¾ø½À´Ï´Ù.' });
-    }
+  try {
+    const savedProduct = await newProduct.save();
+    res.status(201).json(savedProduct);
+  } catch (error) {
+    console.error("Error creating product:", error);
+    res
+      .status(500)
+      .json({ message: "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½." });
+  }
 });
 
-router.put('/:productId', async (req, res) => {
-    const { productId } = req.params;
-    const updates = req.body;
+router.put("/:productId", async (req, res) => {
+  const { productId } = req.params;
+  const updates = req.body;
 
-    try {
-        const updatedProduct = await Product.findByIdAndUpdate(productId, updates, { new: true }).populate('brand').populate('category');
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(productId, updates, {
+      new: true,
+    })
+      .populate("brand")
+      .populate("category");
 
-        if (!updatedProduct) {
-            return res.status(404).json({ message: 'Á¦Ç°À» Ã£À» ¼ö ¾ø½À´Ï´Ù.' });
-        }
-
-        res.status(200).json(updatedProduct);
-    } catch (error) {
-        console.error('Error updating product:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ Á¦Ç°À» ¾÷µ¥ÀÌÆ®ÇÒ ¼ö ¾ø½À´Ï´Ù.' });
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "ï¿½ï¿½Ç°ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½." });
     }
+
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    console.error("Error updating product:", error);
+    res
+      .status(500)
+      .json({ message: "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½." });
+  }
 });
 
-router.delete('/:productId', async (req, res) => {
-    const { productId } = req.params;
+router.delete("/:productId", async (req, res) => {
+  const { productId } = req.params;
 
-    try {
-        const deletedProduct = await Product.findByIdAndDelete(productId);
+  try {
+    const deletedProduct = await Product.findByIdAndDelete(productId);
 
-        if (!deletedProduct) {
-            return res.status(404).json({ message: 'Á¦Ç°À» Ã£À» ¼ö ¾ø½À´Ï´Ù.' });
-        }
-
-        res.status(200).json({ message: 'Á¦Ç°ÀÌ ¼º°øÀûÀ¸·Î »èÁ¦µÇ¾ú½À´Ï´Ù.' });
-    } catch (error) {
-        console.error('Error deleting product:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ Á¦Ç°À» »èÁ¦ÇÒ ¼ö ¾ø½À´Ï´Ù.' });
+    if (!deletedProduct) {
+      return res.status(404).json({ message: "ï¿½ï¿½Ç°ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½." });
     }
+
+    res.status(200).json({ message: "ï¿½ï¿½Ç°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½." });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    res
+      .status(500)
+      .json({ message: "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½." });
+  }
 });
 
 export default router;

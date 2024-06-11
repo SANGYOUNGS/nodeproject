@@ -1,11 +1,9 @@
+import jwt from 'jsonwebtoken'; 
+
 authenticationMiddleware =(req, res, next) => {
-    const { token } = req.cookies;
-    try {
-        const secretKey = process.env.JWT_SECRET_KEY || 'jwt-secret-key';
-        const userInfo = jwt.verify(token, secretKey);
-      // { em: "team2@gmail.com", ro: "user"}
-  
-      // 토큰 검증이 성공적으로 완료되면 토큰에 담긴 값을 이후 request handler에서도 사용할수 있도록 임시 저장소인 res.locals에 등록
+  const { token } = req.cookies;
+  try {
+      const userInfo = jwt.verify(token, process.env.JWT_SECRET);
       res.locals.user = userInfo;
       next();
     } catch (error) {
@@ -27,4 +25,19 @@ authenticationMiddleware =(req, res, next) => {
         data: null,
       });
     }
-}
+    };
+
+      const checkRole = (req, res, next) => {
+        const { user } = res.locals;
+        if (user.role === "admin") {
+          next();
+          return;
+        }
+        const error = new Error("관리자 권한이 필요합니다.");
+        error.statusCode = 403;
+        next(error);
+      };
+  
+
+
+  export default {authenticationMiddleware, checkRole};

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const { Schema } = "mongoose";
+const { Schema } = mongoose;
 
 const UserSchema = new Schema(
   {
@@ -17,9 +17,10 @@ const UserSchema = new Schema(
       required: true,
     },
     phoneNumber: {
-      type: Number,
-      required: false,
+      type: String,
+      required: true,
     },
+
     address: {
       type: new Schema(
         {
@@ -35,8 +36,8 @@ const UserSchema = new Schema(
     role: {
       type: String,
       required: false,
-      enum: ['user', 'admin'],
-      default: 'user',
+      enum: ["user", "admin"],
+      default: "user",
     },
   },
   {
@@ -44,6 +45,6 @@ const UserSchema = new Schema(
   }
 );
 
-const User = mongoose.model('User', UserSchema);
+const User = mongoose.model("User", UserSchema);
 
 export default User;

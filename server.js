@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 import registerRouter from "./routes/register.js";
 import ordersRouter from "./routes/orders.js";
 import adminRouter from "./routes/admin.js";
-import userRouter from "./routes/user.js";
+import usersRouter from "./routes/user.js";
 import signRouter from "./routes/login-out.js";
 import brandRouter from "./routes/brand.js";
 import categoryRouter from "./routes/category.js";

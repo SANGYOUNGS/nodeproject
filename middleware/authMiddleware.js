@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken'; 
 
-const authenticationMiddleware = (req, res, next) => {
+const authenticationMiddleware =(req, res, next) => {
   const token =
-    req.cookies.token || req.cookies.userCookie || req.cookies.adminCookie;
+  req.cookies.token || req.cookies.userCookie || req.cookies.adminCookie;
   if (!token) {
     return res.status(401).json({ message: "토큰이 없습니다." });
   }
@@ -25,15 +25,15 @@ const authenticationMiddleware = (req, res, next) => {
   }
 };
 
-const checkRole = (req, res, next) => {
-  const { user } = res.locals;
-  if (user.role === "admin") {
-    next();
-  } else {
-    const error = new Error("관리자 권한이 필요합니다.");
-    error.statusCode = 403;
-    next(error);
-  }
-};
+      const checkRole = (req, res, next) => {
+        const { user } = res.locals;
+        if (user.role === "admin") {
+          next();
+        } else {
+        const error = new Error("관리자 권한이 필요합니다.");
+        error.statusCode = 403;
+        next(error);
+        }
+      };
 
-export { authenticationMiddleware, checkRole };
+      export { authenticationMiddleware, checkRole};

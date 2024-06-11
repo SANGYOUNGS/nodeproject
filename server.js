@@ -8,7 +8,6 @@ import adminRouter from "./routes/admin.js";
 import userRouter from "./routes/user.js";
 import signRouter from "./routes/login-out.js";
 
-
 dotenv.config();
 
 const app = express();
@@ -35,7 +34,6 @@ app.use(express.json());
 app.use("/api/register", registerRouter);
 app.use("/api/login", signRouter);
 app.use("/api/logout", signRouter);
-app.use("/api/user", userRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/users", userRouter);

@@ -2,6 +2,14 @@ import jwt from 'jsonwebtoken';
 
 authenticationMiddleware =(req, res, next) => {
   const { token } = req.cookies;
+
+  if(!token) {
+    return res.status(401).json({
+      error: "토큰이 없습니다. 로그인 해주세요.",
+      data: null,
+    });
+  }
+  
   try {
       const userInfo = jwt.verify(token, process.env.JWT_SECRET);
       res.locals.user = userInfo;

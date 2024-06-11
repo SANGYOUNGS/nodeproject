@@ -6,6 +6,8 @@ import registerRouter from "./routes/register.js";
 import ordersRouter from "./routes/orders.js";
 import adminRouter from "./routes/admin.js";
 import userRouter from "./routes/user.js";
+import signRouter from "./routes/login-out.js";
+
 
 dotenv.config();
 
@@ -31,9 +33,19 @@ const startServer = () => {
 app.use(cors());
 app.use(express.json());
 app.use("/api/register", registerRouter);
+app.use("/api/login", signRouter);
+app.use("/api/logout", signRouter);
+app.use("/api/user", userRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/users", userRouter);
+
+//에러 핸들러
+// app.use ((err, req, res, next)=> {
+//   const statusCode = err.statusCode || 500;
+//   res.status(statusCode).json({ message: err.message || 'server error'});
+// return;
+// });
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Clothes API");

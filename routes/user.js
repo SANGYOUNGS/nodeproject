@@ -2,7 +2,6 @@ import express from "express";
 import User from "../models/schema/user.js";
 import bcrypt from "bcrypt";
 import { authenticationMiddleware } from "../middleware/authMiddleware.js";
-import { authenticationMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 

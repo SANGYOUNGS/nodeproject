@@ -4,6 +4,9 @@ import dotenv from "dotenv";
 import registerRouter from "./routes/register.js";
 import ordersRouter from "./routes/orders.js";
 import adminRouter from "./routes/admin.js";
+import brandRouter from "./routes/brand.js";
+import categoryRouter from  "./routes/category.js";
+import productRouter from "./routes/product.js";
 
 // 환경 변수 로드
 dotenv.config();
@@ -30,9 +33,9 @@ const startServer = () => {
 app.use(express.json()); // JSON 본문 파싱 미들웨어 추가
 app.use("/", registerRouter, adminRouter);
 app.use("/api/orders", ordersRouter);
-
-
-
+app.use("/api/brand", brandRouter);
+app.use("/api/category", categoryRouter);
+app.use("/api/product", productRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Clothes API");

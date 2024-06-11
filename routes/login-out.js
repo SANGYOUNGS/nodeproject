@@ -26,7 +26,7 @@ router.post('/login', async (req, res, next) => {
     }
 
     const token = jwt.sign(
-      { email: user.email, role: user.role }, process.env.JWT_SECRET, {expriresIn: "1h" });
+      { email: user.email, role: user.role }, process.env.JWT_SECRET, {expiresIn: "1h" });
       if(user.role === 'admin') {
         res.cookie('adminCookie', token, {httpOnly: true, secure: true, path: '/admin'}).json('로그인 성공!');
       } else {

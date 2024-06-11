@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { variantSchema } from "./product.js"; // variantSchema를 import
+import Variant from "./variant.js"; // variantSchema를 import
 
 const { Schema } = mongoose;
 
@@ -7,7 +7,8 @@ const orderSchema = new Schema({
   items: [
     {
       item: {
-        type: variantSchema, // variantSchema를 여기서 사용
+        type: Schema.Types.ObjectId,
+        ref: 'Variant', // variantSchema를 여기서 사용
         required: true,
       },
       quantity: {

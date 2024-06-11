@@ -1,7 +1,7 @@
 import express from "express";
 import Brand from "../models/schema/brand.js";
 import Product from "../models/schema/product.js";
-import Category from "../models/schema/category.js"; // ¿Ö ÀÌ°Ô ÇÊ¿äÇÏÁö? ¤Ğ¤Ğ
+import Category from "../models/schema/category.js"; // ì™œ ì´ê²Œ í•„ìš”í•˜ì§€? ã… ã… 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
         res.status(200).json(brands);
     } catch (error) {
         console.error('Error fetching brands:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ ºê·£µå¸¦ °¡Á®¿Ã ¼ö ¾ø½À´Ï´Ù.' });
+        res.status(500).json({ message: 'ì„œë²„ ì˜¤ë¥˜ë¡œ ì¸í•´ ë¸Œëœë“œë¥¼ ê°€ì ¸ì˜¬ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
     }
 });
    
@@ -27,7 +27,7 @@ router.get("/:brandId", async (req, res) => {
 router.post('/', async (req, res) => {
     const { name } = req.body;
     if (!name) {
-        return res.status(400).json({ message: 'ºê·£µå ÀÌ¸§ÀÌ ÇÊ¿äÇÕ´Ï´Ù.' });
+        return res.status(400).json({ message: 'ë¸Œëœë“œ ì´ë¦„ì´ í•„ìš”í•©ë‹ˆë‹¤.' });
     }
     try {
         const newBrand = new Brand({ name });
@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
         res.status(201).json(newBrand);
     } catch (error) {
         console.error('Error adding brand:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ ºê·£µå¸¦ Ãß°¡ÇÒ ¼ö ¾ø½À´Ï´Ù.' });
+        res.status(500).json({ message: 'ì„œë²„ ì˜¤ë¥˜ë¡œ ì¸í•´ ë¸Œëœë“œë¥¼ ì¶”ê°€í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
     }
 });   
 
@@ -43,7 +43,7 @@ router.put('/:brandId', async (req, res) => {
     const { brandId } = req.params;
     const { name } = req.body;
     if (!name) {
-        return res.status(400).json({ message: 'ºê·£µå ÀÌ¸§ÀÌ ÇÊ¿äÇÕ´Ï´Ù.' });
+        return res.status(400).json({ message: 'ë¸Œëœë“œ ì´ë¦„ì´ í•„ìš”í•©ë‹ˆë‹¤.' });
     }
     try {
         const updatedBrand = await Brand.findByIdAndUpdate(
@@ -52,12 +52,12 @@ router.put('/:brandId', async (req, res) => {
         { new: true, runValidators: true }
     );
         if (!updatedBrand) {
-            return res.status(404).json({ message: 'ºê·£µå¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.' });
+            return res.status(404).json({ message: 'ë¸Œëœë“œë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
         }
         res.status(200).json(updatedBrand);
     } catch (error) {
         console.error('Error updating brand:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ ºê·£µå¸¦ ¼öÁ¤ÇÒ ¼ö ¾ø½À´Ï´Ù.' });
+        res.status(500).json({ message: 'ì„œë²„ ì˜¤ë¥˜ë¡œ ì¸í•´ ë¸Œëœë“œë¥¼ ìˆ˜ì •í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
     }
  });
 
@@ -67,16 +67,16 @@ router.delete('/:brandId', async (req, res) => {
         const products = await Product.find({ brand: brandId });
         console.log(`Products linked to brand ${brandId}:`, products);
     if (products.length > 0) {
-        return res.status(400).json({ message: 'ÀÌ ºê·£µå¿Í ¿¬°áµÈ Á¦Ç°ÀÌ ÀÖÀ¸¹Ç·Î »èÁ¦ÇÒ ¼ö ¾ø½À´Ï´Ù.' });
+        return res.status(400).json({ message: 'ì´ ë¸Œëœë“œì™€ ì—°ê²°ëœ ì œí’ˆì´ ìˆìœ¼ë¯€ë¡œ ì‚­ì œí•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
     }
     const deletedBrand = await Brand.findByIdAndDelete(brandId);
     if (!deletedBrand) {
-        return res.status(404).json({ message: 'ºê·£µå¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.' });
+        return res.status(404).json({ message: 'ë¸Œëœë“œë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
     }
-    res.status(200).json({ message: 'ºê·£µå°¡ ¼º°øÀûÀ¸·Î »èÁ¦µÇ¾ú½À´Ï´Ù.' });} 
+    res.status(200).json({ message: 'ë¸Œëœë“œê°€ ì„±ê³µì ìœ¼ë¡œ ì‚­ì œë˜ì—ˆìŠµë‹ˆë‹¤.' });} 
     catch (error) {
         console.error('Error deleting brand:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ ºê·£µå¸¦ »èÁ¦ÇÒ ¼ö ¾ø½À´Ï´Ù.' });
+        res.status(500).json({ message: 'ì„œë²„ ì˜¤ë¥˜ë¡œ ì¸í•´ ë¸Œëœë“œë¥¼ ì‚­ì œí•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
     }
 });
 

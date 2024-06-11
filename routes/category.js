@@ -1,7 +1,7 @@
 import express from "express";
 import Brand from "../models/schema/brand.js";
 import Product from "../models/schema/product.js";
-import Category from "../models/schema/category.js"; // ¿Ö ÀÌ°Ô ÇÊ¿äÇÏÁö? ¤Ğ¤Ğ
+import Category from "../models/schema/category.js"; // ì™œ ì´ê²Œ í•„ìš”í•˜ì§€? ã… ã… 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
     res.status(200).json(categories);
     } catch (error) {
     console.error('Error fetching categories:', error);
-    res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ Ä«Å×°í¸®¸¦ °¡Á®¿Ã ¼ö ¾ø½À´Ï´Ù.' });
+    res.status(500).json({ message: 'ì„œë²„ ì˜¤ë¥˜ë¡œ ì¸í•´ ì¹´í…Œê³ ë¦¬ë¥¼ ê°€ì ¸ì˜¬ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
     }
 });
 
@@ -27,7 +27,7 @@ router.get("/:categoryId", async (req, res) => {
 router.post('/', async (req, res) => {
     const { name } = req.body;
     if (!name) {
-        return res.status(400).json({ message: 'Ä«Å×°í¸® ÀÌ¸§ÀÌ ÇÊ¿äÇÕ´Ï´Ù.' });
+        return res.status(400).json({ message: 'ì¹´í…Œê³ ë¦¬ ì´ë¦„ì´ í•„ìš”í•©ë‹ˆë‹¤.' });
     }
     try {
         const newCategory = new Category({ name });
@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
         res.status(201).json(newCategory);
     } catch (error) {
         console.error('Error adding category:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ Ä«Å×°í¸®¸¦ Ãß°¡ÇÒ ¼ö ¾ø½À´Ï´Ù.' });
+        res.status(500).json({ message: 'ì„œë²„ ì˜¤ë¥˜ë¡œ ì¸í•´ ì¹´í…Œê³ ë¦¬ë¥¼ ì¶”ê°€í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
     }
 });
 
@@ -43,7 +43,7 @@ router.put('/:categoryId', async (req, res) => {
     const { categoryId } = req.params;
     const { name } = req.body;
     if (!name) {
-        return res.status(400).json({ message: 'Ä«Å×°í¸® ÀÌ¸§ÀÌ ÇÊ¿äÇÕ´Ï´Ù.' });
+        return res.status(400).json({ message: 'ì¹´í…Œê³ ë¦¬ ì´ë¦„ì´ í•„ìš”í•©ë‹ˆë‹¤.' });
     }
     try {
         const updatedCategory = await Category.findByIdAndUpdate(
@@ -52,12 +52,12 @@ router.put('/:categoryId', async (req, res) => {
             { new: true, runValidators: true }
         );
         if (!updatedCategory) {
-            return res.status(404).json({ message: 'Ä«Å×°í¸®¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.' });
+            return res.status(404).json({ message: 'ì¹´í…Œê³ ë¦¬ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
         }
         res.status(200).json(updatedCategory);
     } catch (error) {
         console.error('Error updating category:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ Ä«Å×°í¸®¸¦ ¼öÁ¤ÇÒ ¼ö ¾ø½À´Ï´Ù.' });
+        res.status(500).json({ message: 'ì„œë²„ ì˜¤ë¥˜ë¡œ ì¸í•´ ì¹´í…Œê³ ë¦¬ë¥¼ ìˆ˜ì •í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
     }
 });
 
@@ -67,16 +67,16 @@ router.delete('/:categoryId', async (req, res) => {
         const products = await Product.find({ category: categoryId });
         console.log(`Products linked to category ${categoryId}:`, products);
         if (products.length > 0) {
-            return res.status(400).json({ message: 'ÀÌ Ä«Å×°í¸®¿Í ¿¬°áµÈ Á¦Ç°ÀÌ ÀÖÀ¸¹Ç·Î »èÁ¦ÇÒ ¼ö ¾ø½À´Ï´Ù.' });
+            return res.status(400).json({ message: 'ì´ ì¹´í…Œê³ ë¦¬ì™€ ì—°ê²°ëœ ì œí’ˆì´ ìˆìœ¼ë¯€ë¡œ ì‚­ì œí•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
         }
         const deletedCategory = await Category.findByIdAndDelete(categoryId);
         if (!deletedCategory) {
-            return res.status(404).json({ message: 'Ä«Å×°í¸®¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.' });
+            return res.status(404).json({ message: 'ì¹´í…Œê³ ë¦¬ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
         }
-        res.status(200).json({ message: 'Ä«Å×°í¸®°¡ ¼º°øÀûÀ¸·Î »èÁ¦µÇ¾ú½À´Ï´Ù.' });
+        res.status(200).json({ message: 'ì¹´í…Œê³ ë¦¬ê°€ ì„±ê³µì ìœ¼ë¡œ ì‚­ì œë˜ì—ˆìŠµë‹ˆë‹¤.' });
     } catch (error) {
         console.error('Error deleting category:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ Ä«Å×°í¸®¸¦ »èÁ¦ÇÒ ¼ö ¾ø½À´Ï´Ù.' });
+        res.status(500).json({ message: 'ì„œë²„ ì˜¤ë¥˜ë¡œ ì¸í•´ ì¹´í…Œê³ ë¦¬ë¥¼ ì‚­ì œí•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
     }
 });
 

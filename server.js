@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import registerRouter from "./routes/register.js";
 import ordersRouter from "./routes/orders.js";
 import adminRouter from "./routes/admin.js";
@@ -29,8 +30,15 @@ const startServer = () => {
   });
 };
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
+app.use(cookieParser());
 app.use(express.json());
+
 app.use("/api/register", registerRouter);
 app.use("/api/login", signRouter);
 app.use("/api/logout", signRouter);
@@ -38,12 +46,11 @@ app.use("/api/admin", adminRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/users", userRouter);
 
-//에러 핸들러
-// app.use ((err, req, res, next)=> {
-//   const statusCode = err.statusCode || 500;
-//   res.status(statusCode).json({ message: err.message || 'server error'});
-// return;
-// });
+// 에러 핸들러
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  res.status(statusCode).json({ message: err.message || "server error" });
+});
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Clothes API");

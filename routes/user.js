@@ -1,31 +1,30 @@
 import express from "express";
 import User from "../models/schema/user.js";
 import bcrypt from "bcrypt";
+import { authenticationMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-//정보 조회
-router.get("/me", async (req, res, next) => {
+// 정보 조회
+router.get("/me", authenticationMiddleware, async (req, res, next) => {
   try {
     console.log("첫 번째 사용자 조회 시도 중");
 
-    const user = await User.findOne().sort({ _id: 1 });
-    console.log(`조회된 사용자: ${user}`);
-
+    const user = await User.findById(res.locals.user.id).select("-password");
     if (!user) {
-      const error = new Error("사용자를 찾을 수 없습니다.");
-      error.statusCode = 404;
-      throw error;
+      console.log("사용자를 찾을 수 없습니다.");
+      return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
     }
 
     res.status(200).json(user);
   } catch (err) {
+    console.log("서버 에러:", err.message);
     next(err);
   }
 });
 
-//정보 수정
-router.put("/user/:id", async (req, res, next) => {
+// 정보 수정
+router.put("/user/:id", authenticationMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
@@ -63,8 +62,8 @@ router.put("/user/:id", async (req, res, next) => {
   }
 });
 
-//정보 삭제
-router.delete("/user/:id", async (req, res, next) => {
+// 정보 삭제
+router.delete("/user/:id", authenticationMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findByIdAndDelete(id);

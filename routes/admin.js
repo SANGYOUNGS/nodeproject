@@ -2,6 +2,7 @@ import express from "express";
 import productService from "../services/adminService.js";
 import Brand from "../models/schema/brand.js";
 import Category from "../models/schema/category.js";
+// import Order from "../models/schema/order.js" 추후 오더 구현시 사용
 import { authenticationMiddleware, checkRole } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -57,5 +58,24 @@ router.delete("/products/:id", authenticationMiddleware, checkRole, async (req, 
     res.status(500).send("Server Error");
   }
 });
+
+// 어드민 대쉬 보드 
+router.get("/dashboard",  async (req, res) => {
+  try {
+    const totalProducts = await productService.getTotalProducts();
+    const totalBrands = await productService.getTotalBrands();
+    const totalStock = await productService.getTotalStock();
+
+    res.json({
+      totalProducts,
+      totalBrands,
+      totalStock
+    });
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 
 export default router;

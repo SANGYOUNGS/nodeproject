@@ -1,4 +1,6 @@
 import Product from "../models/schema/product.js";
+import Brand from "../models/schema/brand.js";
+import Variant from "../models/schema/variant.js";
 
 // 제품 조회
 const getProducts = async () => {
@@ -50,10 +52,55 @@ const deleteProduct = async (productId) => {
     throw new Error("제품을 삭제하는 중 오류가 발생했습니다.");
   }
 };
+// 제품 합계 개수
+const getTotalProducts = async () => {
+  try {
+    const totalProducts = await Product.countDocuments({});
+    return totalProducts;
+  } catch (error) {
+    console.error("제품 합계을 찾지못했습니다.", error);
+    throw error;
+  }
+};
+// 브랜드 합계 개수
+const getTotalBrands = async () => {
+  try {
+    const totalBrands = await Brand.countDocuments({});
+    return totalBrands;
+  } catch (error) {
+    console.error("브랜드 합계를 찾지못했습니다", error);
+    throw error;
+  }
+};
+// 제품 총 개수
+const getTotalStock = async () => {
+  try {
+    const variants = await Variant.find({});
+    let totalStock = 0;
+
+    variants.forEach(variant => {
+      const sizes = variant.sizes;
+      for (const size in sizes) {
+        if (sizes.hasOwnProperty(size) && typeof sizes[size] === 'number') {
+          totalStock += sizes[size];
+        }
+      }
+    });
+
+    return totalStock;
+  } catch (error) {
+    console.error("총 개수를 찾지못했습니다.:", error);
+    throw error;
+  }
+};
+
 
 export default {
   getProducts,
   addProduct,
   updateProduct,
   deleteProduct,
+  getTotalProducts,
+  getTotalBrands,
+  getTotalStock,
 };

@@ -12,6 +12,7 @@ import brandRouter from "./routes/brand.js";
 import categoryRouter from "./routes/category.js";
 import productRouter from "./routes/product.js";
 import guestsRouter from "./routes/guests.js";
+import variantRouter from "./routes/variant.js";
 
 dotenv.config();
 
@@ -59,6 +60,11 @@ app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   res.status(statusCode).json({ message: err.message || "server error" });
 });
+
+app.use("/api/brand", brandRouter);
+app.use("/api/category", categoryRouter);
+app.use("/api/product", productRouter);
+app.use("/api/variant", variantRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Clothes API");

@@ -1,14 +1,15 @@
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
-const sizeSchema = new Schema({
-  size: { type: String, required: true },
-  quantity: { type: Number, required: true }
-});
-
 const variantSchema = new Schema({
   color: { type: String, required: true },
-  sizes: [sizeSchema],
+  sizes: {
+    XS: { type: Number, default: 0 },
+    S: { type: Number, default: 0 },
+    M: { type: Number, default: 0 },
+    L: { type: Number, default: 0 },
+    XL: { type: Number, default: 0 }
+  },
   productId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Product',

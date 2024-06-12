@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import Product from '../models/schema/product.js';
 import Brand from '../models/schema/brand.js';
 import Category from '../models/schema/category.js';
-import Variant from '../models/schema/variant.js'; // Variant ¸ğµ¨ Ãß°¡
+import Variant from '../models/schema/variant.js'; // Variant ëª¨ë¸ ì¶”ê°€
 
 const router = express.Router();
 
@@ -13,80 +13,78 @@ router.get('/', async (req, res) => {
         res.status(200).json(products);
     } catch (error) {
         console.error('Error fetching products:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ Á¦Ç°À» °¡Á®¿Ã ¼ö ¾ø½À´Ï´Ù.' });
+        res.status(500).json({ message: 'ì„œë²„ ì˜¤ë¥˜ë¡œ ì¸í•´ ì œí’ˆì„ ê°€ì ¸ì˜¬ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
     }
 });
 
 router.get('/:productId', async (req, res) => {
-    const { productId } = req.params;
-
     try {
+        const { productId } = req.params;
         const product = await Product.findById(productId).populate('brand').populate('category');
-
         if (!product) {
-            return res.status(404).json({ message: 'Á¦Ç°À» Ã£À» ¼ö ¾ø½À´Ï´Ù.' });
+            return res.status(404).json({ message: 'ì œí’ˆì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
         }
-
         res.status(200).json(product);
     } catch (error) {
         console.error('Error fetching product:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ Á¦Ç°À» °¡Á®¿Ã ¼ö ¾ø½À´Ï´Ù.' });
+        res.status(500).json({ message: 'ì„œë²„ ì˜¤ë¥˜ë¡œ ì¸í•´ ì œí’ˆì„ ê°€ì ¸ì˜¬ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
     }
 });
 
 router.post('/', async (req, res) => {
-    const { name, brand, category, description, longdescription, price } = req.body;
-
-    const newProduct = new Product({
-        name,
-        brand,
-        category,
-        description,
-        longdescription,
-        price
-    });
-
     try {
-        const savedProduct = await newProduct.save();
-        res.status(201).json(savedProduct);
+        const { name, brand, category, description, longdescription, price, images } = req.body;
+        
+        // ë¸Œëœë“œì™€ ì¹´í…Œê³ ë¦¬ê°€ ìœ íš¨í•œì§€ í™•ì¸
+        const brandExists = await Brand.findById(brand);
+        const categoryExists = await Category.findById(category);
+
+        const product = new Product({
+            name,
+            brand,
+            category,
+            description,
+            longdescription,
+            price,
+            images
+        });
+
+        await product.save();
+        res.status(201).json(product);
     } catch (error) {
-        console.error('Error creating product:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ Á¦Ç°À» »ı¼ºÇÒ ¼ö ¾ø½À´Ï´Ù.' });
+        res.status(500).json({ message: error.message });
     }
 });
 
 router.put('/:productId', async (req, res) => {
-    const { productId } = req.params;
-    const updates = req.body;
-
     try {
+        const { productId } = req.params;
+        const updates = req.body;
+
         const updatedProduct = await Product.findByIdAndUpdate(productId, updates, { new: true }).populate('brand').populate('category');
-
         if (!updatedProduct) {
-            return res.status(404).json({ message: 'Á¦Ç°À» Ã£À» ¼ö ¾ø½À´Ï´Ù.' });
+            return res.status(404).json({ message: 'ì œí’ˆì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
         }
-
         res.status(200).json(updatedProduct);
     } catch (error) {
         console.error('Error updating product:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ Á¦Ç°À» ¾÷µ¥ÀÌÆ®ÇÒ ¼ö ¾ø½À´Ï´Ù.' });
+        res.status(500).json({ message: 'ì„œë²„ ì˜¤ë¥˜ë¡œ ì¸í•´ ì œí’ˆì„ ì—…ë°ì´íŠ¸í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
     }
 });
 
 router.delete('/:productId', async (req, res) => {
-    const { productId } = req.params;
-
     try {
+        const { productId } = req.params;
         const deletedProduct = await Product.findByIdAndDelete(productId);
-
         if (!deletedProduct) {
-            return res.status(404).json({ message: 'Á¦Ç°À» Ã£À» ¼ö ¾ø½À´Ï´Ù.' });
+            return res.status(404).json({ message: 'ì œí’ˆì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
         }
+        await Variant.deleteMany({ productId: deletedProduct._id });
 
-        res.status(200).json({ message: 'Á¦Ç°ÀÌ ¼º°øÀûÀ¸·Î »èÁ¦µÇ¾ú½À´Ï´Ù.' });
+        res.status(200).json({ message: 'ì œí’ˆì´ ì„±ê³µì ìœ¼ë¡œ ì‚­ì œë˜ì—ˆìŠµë‹ˆë‹¤.' });
     } catch (error) {
         console.error('Error deleting product:', error);
-        res.status(500).json({ message: '¼­¹ö ¿À·ù·Î ÀÎÇØ Á¦Ç°À» »èÁ¦ÇÒ ¼ö ¾ø½À´Ï´Ù.' });
+        res.status(500).json({ message: 'ì„œë²„ ì˜¤ë¥˜ë¡œ ì¸í•´ ì œí’ˆì„ ì‚­ì œí•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' });
     }
 });
 

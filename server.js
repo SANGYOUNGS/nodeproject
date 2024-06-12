@@ -6,11 +6,12 @@ import cookieParser from "cookie-parser";
 import registerRouter from "./routes/register.js";
 import ordersRouter from "./routes/orders.js";
 import adminRouter from "./routes/admin.js";
-import userRouter from "./routes/user.js";
+import usersRouter from "./routes/user.js";
 import signRouter from "./routes/login-out.js";
 import brandRouter from "./routes/brand.js";
-import categoryRouter from  "./routes/category.js";
+import categoryRouter from "./routes/category.js";
 import productRouter from "./routes/product.js";
+import guestsRouter from "./routes/guests.js";
 
 dotenv.config();
 
@@ -47,17 +48,17 @@ app.use("/api/login", signRouter);
 app.use("/api/logout", signRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/orders", ordersRouter);
-app.use("/api/users", userRouter);
+app.use("/api/users", usersRouter);
+app.use("/api/brand", brandRouter);
+app.use("/api/category", categoryRouter);
+app.use("/api/product", productRouter);
+app.use("/api/guests", guestsRouter);
 
 // 에러 핸들러
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   res.status(statusCode).json({ message: err.message || "server error" });
 });
-
-app.use("/api/brand", brandRouter);
-app.use("/api/category", categoryRouter);
-app.use("/api/product", productRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Clothes API");

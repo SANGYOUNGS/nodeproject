@@ -63,7 +63,7 @@ router.put("/user/:id", authenticationMiddleware, async (req, res, next) => {
 });
 
 // 정보 삭제
-router.delete("/user/:id", authenticationMiddleware, async (req, res, next) => {
+router.delete("/delete", authenticationMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findByIdAndDelete(id);

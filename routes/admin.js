@@ -2,10 +2,11 @@ import express from "express";
 import productService from "../services/adminService.js";
 import Brand from "../models/schema/brand.js";
 import Category from "../models/schema/category.js";
+import { authenticationMiddleware, checkRole } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/products", async (req, res) => {
+router.post("/products", authenticationMiddleware, checkRole,  async (req, res) => {
   try {
     const { brand, category, ...productData } = req.body;
 
@@ -30,7 +31,7 @@ router.post("/products", async (req, res) => {
   }
 });
 
-router.put("/products/:id", async (req, res) => {
+router.put("/products/:id",authenticationMiddleware, checkRole,  async (req, res) => {
   try {
     const updatedProduct = await productService.updateProduct(
       req.params.id,
@@ -45,7 +46,7 @@ router.put("/products/:id", async (req, res) => {
   }
 });
 
-router.delete("/products/:id", async (req, res) => {
+router.delete("/products/:id", authenticationMiddleware, checkRole, async (req, res) => {
   try {
     const deletedProduct = await productService.deleteProduct(req.params.id);
     if (!deletedProduct) {

@@ -18,12 +18,12 @@ router.post(
     try {
       const { brand, category, ...productData } = req.body;
 
-      const brandDoc = await Brand.findById(brand);
+      const brandDoc = await Brand.findById(brand).lean();
       if (!brandDoc) {
         return res.status(400).json({ message: "Invalid brand ID" });
       }
 
-      const categoryDoc = await Category.findById(category);
+      const categoryDoc = await Category.findById(category).lean();
       if (!categoryDoc) {
         return res.status(400).json({ message: "Invalid category ID" });
       }

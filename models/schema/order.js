@@ -8,7 +8,11 @@ const orderSchema = new Schema({
     {
       item: {
         type: Schema.Types.ObjectId,
-        ref: 'Variant', // variantSchema를 여기서 사용
+        ref: "Variant", // variantSchema를 여기서 사용
+        required: true,
+      },
+      size: {
+        type: String,
         required: true,
       },
       quantity: {

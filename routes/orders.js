@@ -1,44 +1,66 @@
 import express from "express";
 import ordersService from "../services/ordersService.js";
+import {
+  authenticationMiddleware,
+  checkRole,
+} from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 // 주문 추가
-router.post("/", async (req, res) => {
+router.post("/", authenticationMiddleware, async (req, res) => {
+  const { id } = res.locals.user;
   try {
-    const order = await ordersService.addOrder(req.body);
+    const order = await ordersService.addOrder(id, req.body);
     res.json(order);
   } catch (err) {
-    res.status(500).send("Server Error");
+    res.status(500).send("서버 에러가 발생했습니다");
   }
 });
 
 // 주문 조회
-router.get("/", async (req, res) => {
+router.get("/", authenticationMiddleware, async (req, res) => {
+  const { id, role } = res.locals.user;
+  let orders;
+
   try {
-    const orders = await ordersService.getOrders();
+    if (role == "admin") {
+      orders = await ordersService.getAllOrders();
+    } else {
+      orders = await ordersService.getOrders(id);
+    }
     res.json(orders);
   } catch (err) {
-    res.status(500).send("Server Error");
+    res.status(500).send("서버 에러가 발생했습니다");
   }
 });
 
 // 주문 수정
-router.put("/:id", async (req, res) => {
+router.put("/:id", authenticationMiddleware, async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const order = await ordersService.updateOrder(req.params.id, req.body);
-    res.json(order);
+    const updatedOrder = await ordersService.updateOrder(id, req.body);
+    if (!updatedOrder) {
+      return res.status(404).send("주문을 찾을 수 없습니다");
+    }
+    res.json(updatedOrder);
   } catch (err) {
-    res.status(500).send("Server Error");
+    res.status(500).send("서버 에러가 발생했습니다");
   }
 });
 
 // 주문 삭제
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authenticationMiddleware, checkRole, async (req, res) => {
+  const { id } = req.params;
+
   try {
-    await ordersService.deleteOrder(req.params.id);
-    res.json({ msg: "Order removed" });
+    const deletedOrder = await ordersService.deleteOrder(id);
+    if (!deletedOrder) {
+      return res.status(404).send("주문을 찾을 수 없습니다");
+    }
+    res.json({ message: "주문이 성공적으로 삭제되었습니다" });
   } catch (err) {
-    res.status(500).send("Server Error");
+    res.status(500).send("서버 에러가 발생했습니다");
   }
 });
 

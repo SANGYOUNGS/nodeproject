@@ -63,20 +63,30 @@ router.put("/user/:id", authenticationMiddleware, async (req, res, next) => {
 });
 
 // 정보 삭제
-router.delete("/delete", authenticationMiddleware, async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const user = await User.findByIdAndDelete(id);
+router.delete(
+  "/delete/:id",
+  authenticationMiddleware,
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
 
-    if (!user) {
-      const error = new Error("사용자를 찾을 수 없습니다.");
-      error.statusCode = 404;
-      throw error;
+      if (req.user.id !== id) {
+        return res.status(403).send("권한이 없습니다.");
+      }
+
+      const user = await User.findByIdAndDelete(id);
+
+      if (!user) {
+        const error = new Error("사용자를 찾을 수 없습니다.");
+        error.statusCode = 404;
+        throw error;
+      }
+
+      res.status(200).send("성공적으로 삭제되었습니다.");
+    } catch (err) {
+      next(err);
     }
-    res.status(200).send("성공적으로 삭제되었습니다.");
-  } catch (err) {
-    next(err);
   }
-});
+);
 
 export default router;

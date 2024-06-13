@@ -37,14 +37,16 @@ router.post("/login", async (req, res, next) => {
       sameSite: "Lax",
     };
 
+    res.cookie("email", user.email, { maxAge: 3600000, sameSite: "Lax" });
+
     if (user.role === "admin") {
       res
         .cookie("adminCookie", token, cookieOptions)
-        .json({ message: "로그인 성공!", token });
+        .json({ message: "로그인 성공!", token, email: user.email });
     } else {
       res
         .cookie("userCookie", token, cookieOptions)
-        .json({ message: "로그인 성공!", token });
+        .json({ message: "로그인 성공!", token, email: user.email });
     }
   } catch (err) {
     next(err);

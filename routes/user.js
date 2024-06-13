@@ -64,22 +64,20 @@ router.put("/user/:id", authenticationMiddleware, async (req, res, next) => {
 
 // 정보 삭제
 router.delete(
-  "/delete/:id",
+  "/api/delete/:email",
   authenticationMiddleware,
   async (req, res, next) => {
     try {
-      const { id } = req.params;
+      const { email } = req.params;
 
-      if (req.user.id !== id) {
+      if (res.locals.user.email !== email) {
         return res.status(403).send("권한이 없습니다.");
       }
 
-      const user = await User.findByIdAndDelete(id);
+      const user = await User.findOneAndDelete({ email });
 
       if (!user) {
-        const error = new Error("사용자를 찾을 수 없습니다.");
-        error.statusCode = 404;
-        throw error;
+        return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
       }
 
       res.status(200).send("성공적으로 삭제되었습니다.");

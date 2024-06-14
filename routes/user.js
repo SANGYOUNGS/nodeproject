@@ -57,7 +57,7 @@ router.put("/user/:id",  authenticationMiddleware, async (req, res, next) => {
 
 // 정보 삭제
 router.delete(
-  "/api/deletes/:email", authenticationMiddleware,
+  "/:id", authenticationMiddleware,
   async (req, res, next) => {
     const userId = req.user.id;
 

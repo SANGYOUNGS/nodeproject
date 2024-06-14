@@ -29,7 +29,7 @@ const connectDB = async () => {
 };
 
 const startServer = () => {
-  const PORT = process.env.PORT ?? 8000;
+  const PORT = process.env.PORT || 8000;
   app.listen(PORT, () => {
     console.log(`http://localhost:${PORT} 에서 서버 실행중`);
   });
@@ -46,6 +46,7 @@ app.use(express.json());
 
 app.use("/api/register", registerRouter);
 app.use("/api/login", signRouter);
+app.use("/api/logout", signRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/users", usersRouter);
@@ -53,16 +54,20 @@ app.use("/api/brand", brandRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/product", productRouter);
 app.use("/api/guests", guestsRouter);
-app.use("/api/variant", variantRouter);
-
-app.get("/", (req, res) => {
-  res.send("Welcome to the Clothes API");
-});
 
 // 에러 핸들러
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   res.status(statusCode).json({ message: err.message || "server error" });
+});
+
+app.use("/api/brand", brandRouter);
+app.use("/api/category", categoryRouter);
+app.use("/api/product", productRouter);
+app.use("/api/variant", variantRouter);
+
+app.get("/", (req, res) => {
+  res.send("Welcome to the Clothes API");
 });
 
 const init = async () => {

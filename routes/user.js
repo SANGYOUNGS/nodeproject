@@ -58,8 +58,12 @@ router.put("/user/:id", authenticationMiddleware, async (req, res, next) => {
 });
 
 // 정보 삭제
-router.delete("/:id", authenticationMiddleware, async (req, res, next) => {
-  const userId = req.user.id;
+router.delete(
+  "/api/delete/:email",
+  authenticationMiddleware,
+  async (req, res, next) => {
+    try {
+      const { email } = req.params;
 
   if (!userId) {
     const error = new Error("사용자를 찾을 수 없습니다.");

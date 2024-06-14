@@ -25,29 +25,18 @@ const addProduct = async (productData) => {
 
 // 제품 상세정보 업데이트
 const updateProduct = async (productId, updatedData) => {
-  const updates = {};
-  const allowedUpdates = ['name', 'price', 'description', 'longdescription', 'brand', 'category', 'images'];
-
-  for (const key of Object.keys(updatedData)) {
-      if (allowedUpdates.includes(key)) {
-          updates[key] = updatedData[key];
-      }
-  }
-
   try {
-      const updatedProduct = await Product.findByIdAndUpdate(
-          productId,
-          updates,
-          { new: true, runValidators: true }
-      );
-
-      if (!updatedProduct) {
-          throw new Error('해당 제품을 찾을 수 없습니다.');
-      }
-
-      return updatedProduct;
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      updatedData,
+      { new: true }
+    );
+    if (!updatedProduct) {
+      throw new Error("해당 제품을 찾을 수 없습니다.");
+    }
+    return updatedProduct;
   } catch (err) {
-      throw new Error('제품을 업데이트하는 중 오류가 발생했습니다.');
+    throw new Error("제품을 업데이트하는 중 오류가 발생했습니다.");
   }
 };
 
@@ -63,6 +52,47 @@ const deleteProduct = async (productId) => {
     throw new Error("제품을 삭제하는 중 오류가 발생했습니다.");
   }
 };
+// 제품 합계 개수
+const getTotalProducts = async () => {
+  try {
+    const totalProducts = await Product.countDocuments({});
+    return totalProducts;
+  } catch (error) {
+    console.error("제품 합계을 찾지못했습니다.", error);
+    throw error;
+  }
+};
+// 브랜드 합계 개수
+const getTotalBrands = async () => {
+  try {
+    const totalBrands = await Brand.countDocuments({});
+    return totalBrands;
+  } catch (error) {
+    console.error("브랜드 합계를 찾지못했습니다", error);
+    throw error;
+  }
+};
+// 제품 총 개수
+const getTotalStock = async () => {
+  try {
+    const variants = await Variant.find({});
+    let totalStock = 0;
+
+    variants.forEach(variant => {
+      const sizes = variant.sizes;
+      for (const size in sizes) {
+        if (sizes.hasOwnProperty(size) && typeof sizes[size] === 'number') {
+          totalStock += sizes[size];
+        }
+      }
+    });
+
+    return totalStock;
+  } catch (error) {
+    console.error("총 개수를 찾지못했습니다.:", error);
+    throw error;
+  }
+};
 
 
 export default {
@@ -70,4 +100,7 @@ export default {
   addProduct,
   updateProduct,
   deleteProduct,
+  getTotalProducts,
+  getTotalBrands,
+  getTotalStock,
 };

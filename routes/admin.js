@@ -1,5 +1,4 @@
 import express from "express";
-import { validationResult } from 'express-validator';
 import productService from "../services/adminService.js";
 import Brand from "../models/schema/brand.js";
 import Category from "../models/schema/category.js";
@@ -8,7 +7,6 @@ import {
   authenticationMiddleware,
   checkRole,
 } from "../middleware/authMiddleware.js";
-import productValidationRules from  "../middleware/productValidator.js"
 
 const router = express.Router();
 
@@ -43,26 +41,21 @@ router.post(
 );
 
 router.put(
-  '/products/:id',
+  "/products/:id",
   authenticationMiddleware,
   checkRole,
-  productValidationRules,
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
     try {
-      const updatedProduct = await productService.updateProduct(req.params.id, req.body);
-
+      const updatedProduct = await productService.updateProduct(
+        req.params.id,
+        req.body
+      );
+      if (!updatedProduct) {
+        return res.status(404).send("상품을 찾을 수 없습니다.");
+      }
       res.json(updatedProduct);
     } catch (err) {
-      if (err.message === 'Product not found') {
-        return res.status(404).send('상품을 찾을 수 없습니다.');
-      } else {
-        return res.status(500).send('Server Error');
-      }
+      res.status(500).send("Server Error");
     }
   }
 );

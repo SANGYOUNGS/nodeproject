@@ -26,7 +26,7 @@ router.get("/me", authenticationMiddleware, async (req, res, next) => {
 
 // 정보 수정
 router.put("/user/:id", authenticationMiddleware, async (req, res, next) => {
-  const userId = req.user.id;
+  const userId = req.params.id;
   if (!userId) {
     const error = new Error("사용자를 찾을 수 없습니다.");
     error.statusCode = 404;
@@ -59,31 +59,25 @@ router.put("/user/:id", authenticationMiddleware, async (req, res, next) => {
 
 // 정보 삭제
 router.delete(
-  "/api/delete/:email",
+  "/api/delete/:id",
   authenticationMiddleware,
   async (req, res, next) => {
+    const userId = req.params.id;
+
     try {
-      const { email } = req.params;
+      const deletedUser = await User.findByIdAndDelete(userId);
 
-  if (!userId) {
-    const error = new Error("사용자를 찾을 수 없습니다.");
-    error.statusCode = 404;
-    return next(error);
-  }
+      if (!deletedUser) {
+        const error = new Error("사용자를 찾을 수 없습니다.");
+        error.statusCode = 404;
+        throw error;
+      }
 
-  try {
-    const deletedUser = await User.findByIdAndDelete(userId);
-
-    if (!deletedUser) {
-      const error = new Error("사용자를 찾을 수 없습니다.");
-      error.statusCode = 404;
-      throw error;
+      res.json({ message: "사용자 정보가 삭제되었습니다." });
+    } catch (err) {
+      next(err);
     }
-
-    res.json({ message: "사용자 정보가 삭제되었습니다." });
-  } catch (err) {
-    next(err);
   }
-});
+);
 
 export default router;

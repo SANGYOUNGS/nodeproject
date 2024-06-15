@@ -1,7 +1,7 @@
 import express from "express";
 import User from "../models/schema/user.js";
 import bcrypt from "bcrypt";
-import { authenticationMiddleware } from "../middleware/authMiddleware.js";
+import  {authenticationMiddleware}  from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -25,7 +25,7 @@ router.get("/me", authenticationMiddleware, async (req, res, next) => {
 
 // 정보 수정
 router.put("/user/:id", authenticationMiddleware, async (req, res, next) => {
-  const userId = req.user.id;
+  const userId = res.locals.user.id;
   if (!userId) {
     const error = new Error("사용자를 찾을 수 없습니다.");
     error.statusCode = 404;
@@ -60,7 +60,7 @@ router.put("/user/:id", authenticationMiddleware, async (req, res, next) => {
 router.delete("/:id", 
   authenticationMiddleware, 
   async (req, res, next) => {
-  const userId = req.user.id;
+  const userId = res.locals.user.id;
 
   if (!userId) {
     const error = new Error("사용자를 찾을 수 없습니다.");

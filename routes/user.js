@@ -2,7 +2,7 @@ import express from "express";
 import User from "../models/schema/user.js";
 import bcrypt from "bcrypt";
 
-import {authenticationMiddleware} from "../middleware/authMiddleware.js";
+import { authenticationMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -25,7 +25,7 @@ router.get("/me", authenticationMiddleware, async (req, res, next) => {
 });
 
 // 정보 수정
-router.put("/user/:id", authenticationMiddleware, async (req, res, next) => {
+router.put("/user/me", authenticationMiddleware, async (req, res, next) => {
   const userId = res.locals.user.id;
 
   if (!userId) {
@@ -61,10 +61,7 @@ router.put("/user/:id", authenticationMiddleware, async (req, res, next) => {
 });
 
 // 정보 삭제
-router.delete(
-  "/:id", 
-  authenticationMiddleware, 
-  async (req, res, next) => {
+router.delete("/me", authenticationMiddleware, async (req, res, next) => {
   const userId = res.locals.user.id;
 
   if (!userId) {

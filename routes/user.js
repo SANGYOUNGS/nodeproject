@@ -2,7 +2,7 @@ import express from "express";
 import User from "../models/schema/user.js";
 import bcrypt from "bcrypt";
 
-import { authenticationMiddleware } from "../middleware/authMiddleware.js";
+import {authenticationMiddleware} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -26,13 +26,15 @@ router.get("/me", authenticationMiddleware, async (req, res, next) => {
 
 // 정보 수정
 router.put("/user/:id", authenticationMiddleware, async (req, res, next) => {
-  const userId = req.params.id;
+  const userId = res.locals.user.id;
+
   if (!userId) {
     const error = new Error("사용자를 찾을 수 없습니다.");
     error.statusCode = 404;
     return next(error);
   }
   const { name, email, password, address, phoneNumber } = req.body;
+
   try {
     const updateData = { name, email, address, phoneNumber };
     if (password) {
@@ -43,6 +45,7 @@ router.put("/user/:id", authenticationMiddleware, async (req, res, next) => {
     const updateUser = await User.findByIdAndUpdate(userId, updateData, {
       new: true,
     });
+
     if (!updateUser) {
       const error = new Error("사용자를 찾을 수 없습니다.");
       error.statusCode = 404;
@@ -59,25 +62,30 @@ router.put("/user/:id", authenticationMiddleware, async (req, res, next) => {
 
 // 정보 삭제
 router.delete(
-  "/api/delete/:id",
-  authenticationMiddleware,
+  "/:id", 
+  authenticationMiddleware, 
   async (req, res, next) => {
-    const userId = req.params.id;
+  const userId = res.locals.user.id;
 
-    try {
-      const deletedUser = await User.findByIdAndDelete(userId);
-
-      if (!deletedUser) {
-        const error = new Error("사용자를 찾을 수 없습니다.");
-        error.statusCode = 404;
-        throw error;
-      }
-
-      res.json({ message: "사용자 정보가 삭제되었습니다." });
-    } catch (err) {
-      next(err);
-    }
+  if (!userId) {
+    const error = new Error("사용자를 찾을 수 없습니다.");
+    error.statusCode = 404;
+    return next(error);
   }
-);
+
+  try {
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      const error = new Error("사용자를 찾을 수 없습니다.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.json({ message: "사용자 정보가 삭제되었습니다." });
+  } catch (err) {
+    next(err);
+  }
+});
 
 export default router;

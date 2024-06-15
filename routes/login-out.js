@@ -42,11 +42,11 @@ router.post("/login", async (req, res, next) => {
     if (user.role === "admin") {
       res
         .cookie("adminCookie", token, cookieOptions)
-        .json({ message: "로그인 성공!", token, email: user.email });
+        .json({ message: "로그인 성공!", token, email: user.email});
     } else {
       res
         .cookie("userCookie", token, cookieOptions)
-        .json({ message: "로그인 성공!", token, email: user.email });
+        .json({ message: "로그인 성공!", token, email: user.email});
     }
   } catch (err) {
     next(err);

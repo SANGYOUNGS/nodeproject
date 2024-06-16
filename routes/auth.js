@@ -9,6 +9,32 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   const { name, email, password, phoneNumber } = req.body;
 
+  if(!typeof name === 'string'&& !name.trim(),length >=2 ) {
+    const error = new Error("유효한 이름을 입력하세요.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      const error = new Error("유효한 이메일 주소를 입력하세요.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if(!typeof password === 'string' && password.length <=8) {
+      const error = new Error("유효한 비밀번호를 입력하세요.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const phoneRegex = /^\d{10,11}$/;
+    if(!phoneRegex.test(phoneNumber)) {
+      const error = new Error("유효한 핸드폰 번호를 입력하세요.");
+      error.statusCode = 400;
+      throw error;
+    }
+
   try {
     let user = await User.findOne({ email });
     if (user) {

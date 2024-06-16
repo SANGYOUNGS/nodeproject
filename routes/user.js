@@ -33,6 +33,37 @@ router.put("/me", authenticationMiddleware, async (req, res, next) => {
   //유효성검사하기
   const { name, email, password, address, phoneNumber } = req.body;
 
+  if(!typeof name === 'string' && !name.trim(),length >=2 ) {
+    const error = new Error("유효한 이름을 입력하세요.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      const error = new Error("유효한 이메일 주소를 입력하세요.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if(!typeof password === 'string' && password.length <=8) {
+      const error = new Error("유효한 비밀번호를 입력하세요.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if(!typeof address === 'string' && address.trim().length >= 5) {
+      const error = new Error("유효한 주소를 입력하세요.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const phoneRegex = /^\d{10,11}$/;
+    if(!phoneRegex.test(phoneNumber)) {
+      const error = new Error("유효한 핸드폰 번호를 입력하세요.");
+      error.statusCode = 400;
+      throw error;
+    }
 
   try {
     const updateData = { name, email, address, phoneNumber };

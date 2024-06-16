@@ -6,7 +6,7 @@ import Guest from '../models/schema/guest.js';
 const router = express.Router();
 
 //비회원 로그인
-router.post('/api/guests', async (req, res, next) => {
+router.post('/guests', async (req, res, next) => {
     try {
         const { guestEmail, guestPassword } = req.body;
 
@@ -36,7 +36,7 @@ router.post('/api/guests', async (req, res, next) => {
 
         res.cookie('guestCookie', token, cookieOptions);
 
-        if(jwt.decode(token).role ==='guest') {
+        if(role ==='guest') {
             res.status(200).json({ redirectUrl: '/orders'})
         } else {
             res.status(200).json({message: '로그인 성공!'});

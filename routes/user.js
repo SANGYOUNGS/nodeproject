@@ -58,7 +58,7 @@ router.put("/user/me", authenticationMiddleware, async (req, res, next) => {
   }
 
     if(password !== undefined) {
-    if(typeof password === 'string' && password.length > 8) {
+    if(typeof password === 'string' && password.length > 7) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
       updateData.password = hashedPassword;

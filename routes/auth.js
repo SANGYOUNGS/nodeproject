@@ -24,7 +24,7 @@ router.post("/", async (req, res, next) => {
       throw error;
     }
 
-    if(typeof password !== 'string' || password.length <= 8) {
+    if(typeof password !== 'string' || password.length < 7) {
       const error = new Error("비밀번호는 8자 이상이어야 합니다.");
       error.statusCode = 400;
       throw error;
@@ -82,7 +82,7 @@ router.post("/login", async (req, res, next) => {
       throw error;
     }
 
-    if(typeof password !== 'string' || password.length <=8) {
+    if(typeof password !== 'string' || password.length < 7) {
       const error = new Error("비밀번호는 8자 이상이어야 합니다.");
       error.statusCode = 400;
       throw error;

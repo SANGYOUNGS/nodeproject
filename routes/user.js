@@ -22,56 +22,74 @@ router.get("/me", authenticationMiddleware, async (req, res, next) => {
 });
 
 // 정보 수정
-router.put("/me", authenticationMiddleware, async (req, res, next) => {
+router.put("/user/me", authenticationMiddleware, async (req, res, next) => {
   const userId = res.locals.user.id;
 
+  try {
   if (!userId) {
     const error = new Error("사용자를 찾을 수 없습니다.");
     error.statusCode = 404;
     return next(error);
   }
-  //유효성검사하기
+
+  //유효성검사
   const { name, email, password, address, phoneNumber } = req.body;
 
-  if(!typeof name === 'string' && !name.trim(),length >=2 ) {
-    const error = new Error("유효한 이름을 입력하세요.");
+  const updateData = {};
+
+  if(name !== undefined) {
+  if(typeof name === 'string' || name.trim().length >= 2 ) {
+    updateData.name = name;
+  } else {
+    const error = new Error("이름은 2글자 이상이어야 합니다.");
     error.statusCode = 400;
     throw error;
   }
-
+}
+  if(email !== undefined) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      const error = new Error("유효한 이메일 주소를 입력하세요.");
+    if (emailRegex.test(email)) {
+      updateData.email = email;
+    } else {
+      const error = new Error("이메일 형식이 옳바르지 않습니다.");
       error.statusCode = 400;
       throw error;
     }
+  }
 
-    if(!typeof password === 'string' && password.length <=8) {
-      const error = new Error("유효한 비밀번호를 입력하세요.");
+    if(password !== undefined) {
+    if(typeof password === 'string' && password.length > 8) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      updateData.password = hashedPassword;
+    } else {
+      const error = new Error("비밀번호는 8자 이상이어야 합니다.");
       error.statusCode = 400;
       throw error;
     }
+  }
 
-    if(!typeof address === 'string' && address.trim().length >= 5) {
+    if(address !== undefined) {
+    if(typeof address === 'string' && address.trim().length >= 5) {
+      updateData.address = address;
+    } else {
       const error = new Error("유효한 주소를 입력하세요.");
       error.statusCode = 400;
       throw error;
     }
+  }
 
+    if(phoneNumber !== undefined) {
     const phoneRegex = /^\d{10,11}$/;
-    if(!phoneRegex.test(phoneNumber)) {
+    if(phoneRegex.test(phoneNumber)) {
+      updateData.phoneNumber = phoneNumber;
+    } else {
       const error = new Error("유효한 핸드폰 번호를 입력하세요.");
       error.statusCode = 400;
       throw error;
     }
+  }
 
-  try {
-    const updateData = { name, email, address, phoneNumber };
-    if (password) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-      updateData.password = hashedPassword;
-    }
     const updateUser = await User.findByIdAndUpdate(userId, updateData, {
       new: true, runValidators: true,
     });

@@ -6,24 +6,26 @@ import jwt from "jsonwebtoken";
 const router = express.Router();
 
 //회원가입
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   const { name, email, password, phoneNumber } = req.body;
 
-  if(!typeof name === 'string'&& !name.trim(),length >=2 ) {
-    const error = new Error("유효한 이름을 입력하세요.");
+  try {
+
+  if(typeof name !== 'string' || name.trim().length < 2 ) {
+    const error = new Error("이름은 2글자 이상이어야 합니다.");
     error.statusCode = 400;
     throw error;
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      const error = new Error("유효한 이메일 주소를 입력하세요.");
+      const error = new Error("이메일 형식이 옳바르지 않습니다.");
       error.statusCode = 400;
       throw error;
     }
 
-    if(!typeof password === 'string' && password.length <=8) {
-      const error = new Error("유효한 비밀번호를 입력하세요.");
+    if(typeof password !== 'string' || password.length <= 8) {
+      const error = new Error("비밀번호는 8자 이상이어야 합니다.");
       error.statusCode = 400;
       throw error;
     }
@@ -35,7 +37,6 @@ router.post("/", async (req, res) => {
       throw error;
     }
 
-  try {
     let user = await User.findOne({ email });
     if (user) {
       return res
@@ -43,7 +44,7 @@ router.post("/", async (req, res) => {
         .json({message: "이미 등록된 이메일 입니다." });
     }
 
-    user = new UserModel({
+    user = new User({
       name,
       email,
       password,
@@ -56,10 +57,9 @@ router.post("/", async (req, res) => {
     await user.save();
 
     res.json({ message: "Success" });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ error: "Server Error" });
-  }
+  } catch (err) {
+    next(err);
+   }
 });
 
 
@@ -82,11 +82,12 @@ router.post("/login", async (req, res, next) => {
       throw error;
     }
 
-    if(password.length <=8) {
-      const error = new Error("비밀번호는 8자리 이상이어야 합니다.");
+    if(typeof password !== 'string' || password.length <=8) {
+      const error = new Error("비밀번호는 8자 이상이어야 합니다.");
       error.statusCode = 400;
       throw error;
     }
+
     const user = await User.findOne({ email });
     if (!user) {
       const error = new Error("잘못된 이메일 또는 비밀번호입니다.");

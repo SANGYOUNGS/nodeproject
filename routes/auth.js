@@ -5,11 +5,62 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
+//회원가입
+router.post("/", async (req, res) => {
+  const { name, email, password, phoneNumber } = req.body;
+
+  try {
+    let user = await User.findOne({ email });
+    if (user) {
+      return res
+        .status(400)
+        .json({message: "이미 등록된 이메일 입니다." });
+    }
+
+    user = new UserModel({
+      name,
+      email,
+      password,
+      phoneNumber
+    });
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+
+    await user.save();
+
+    res.json({ message: "Success" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: "Server Error" });
+  }
+});
+
+
 // 로그인
 router.post("/login", async (req, res, next) => {
   try {
+
     const { email, password } = req.body;
 
+    if(!email || !password) {
+      const error = new Error("이메일과 비밀번호를 입력하세요.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      const error = new Error("유효한 이메일 주소를 입력하세요.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if(password.length <=8) {
+      const error = new Error("비밀번호는 8자리 이상이어야 합니다.");
+      error.statusCode = 400;
+      throw error;
+    }
     const user = await User.findOne({ email });
     if (!user) {
       const error = new Error("잘못된 이메일 또는 비밀번호입니다.");
@@ -37,16 +88,14 @@ router.post("/login", async (req, res, next) => {
       sameSite: "Lax",
     };
 
-    res.cookie("email", user.email, { maxAge: 3600000, sameSite: "Lax" });
-
     if (user.role === "admin") {
       res
         .cookie("adminCookie", token, cookieOptions)
-        .json({ message: "로그인 성공!", token, email: user.email});
+        .json({ message: "로그인 성공!", token });
     } else {
       res
         .cookie("userCookie", token, cookieOptions)
-        .json({ message: "로그인 성공!", token, email: user.email});
+        .json({ message: "로그인 성공!", token });
     }
   } catch (err) {
     next(err);

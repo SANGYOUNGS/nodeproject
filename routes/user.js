@@ -6,14 +6,12 @@ import {authenticationMiddleware} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// 정보 조회(console.log제외시키기)
+// 정보 조회
 router.get("/me", authenticationMiddleware, async (req, res, next) => {
   try {
-    console.log("첫 번째 사용자 조회 시도 중");
 
     const user = await User.findById(res.locals.user.id).select("-password");
     if (!user) {
-      console.log("사용자를 찾을 수 없습니다.");
       return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
     }
 
@@ -34,6 +32,7 @@ router.put("/me", authenticationMiddleware, async (req, res, next) => {
   }
   //유효성검사하기
   const { name, email, password, address, phoneNumber } = req.body;
+
 
   try {
     const updateData = { name, email, address, phoneNumber };
@@ -62,7 +61,7 @@ router.put("/me", authenticationMiddleware, async (req, res, next) => {
 
 // 정보 삭제
 router.delete(
-  "/:id", 
+  "/me", 
   authenticationMiddleware, 
   async (req, res, next) => {
   const userId = res.locals.user.id;

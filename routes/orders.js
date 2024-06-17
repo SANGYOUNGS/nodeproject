@@ -9,10 +9,14 @@ const router = express.Router();
 // 주문 추가
 router.post("/", authenticationMiddleware, async (req, res) => {
   const { id } = res.locals.user;
+  const { items, name, address, phone } = req.body;
+
   try {
-    const order = await ordersService.addOrder(id, req.body);
-    res.json(order);
+    const order = await ordersService.addOrder(id, items, name, address, phone);
+    res.status(201).json(order);
   } catch (err) {
+    console.log(err);
+
     res.status(500).send("서버 에러가 발생했습니다");
   }
 });
@@ -37,13 +41,11 @@ router.get("/", authenticationMiddleware, async (req, res) => {
 // 주문 수정
 router.put("/:id", authenticationMiddleware, async (req, res) => {
   const { id } = req.params;
+  const { address } = req.body;
 
   try {
-    const updatedOrder = await ordersService.updateOrder(id, req.body);
-    if (!updatedOrder) {
-      return res.status(404).send("주문을 찾을 수 없습니다");
-    }
-    res.json(updatedOrder);
+    await ordersService.updateOrder(id, address);
+    res.status(200).json({ message: "배송지가 성공적으로 변경되었습니다." });
   } catch (err) {
     res.status(500).send("서버 에러가 발생했습니다");
   }
@@ -58,7 +60,7 @@ router.delete("/:id", authenticationMiddleware, checkRole, async (req, res) => {
     if (!deletedOrder) {
       return res.status(404).send("주문을 찾을 수 없습니다");
     }
-    res.json({ message: "주문이 성공적으로 삭제되었습니다" });
+    res.status(200).json({ message: "주문이 성공적으로 삭제되었습니다" });
   } catch (err) {
     res.status(500).send("서버 에러가 발생했습니다");
   }

@@ -7,7 +7,7 @@ import Variant from '../models/schema/variant.js';
 
 const router = express.Router();
 
-// Æ¯Á¤ product¿¡ ¼Ò¼ÓµÈ ¸ðµç variantµé °¡Á®¿À±â
+// íŠ¹ì • productì— ì†Œì†ëœ ëª¨ë“  variantë“¤ ê°€ì ¸ì˜¤ê¸°
 router.get('/:productId', async (req, res) => {
     try {
         const { productId } = req.params;
@@ -18,7 +18,7 @@ router.get('/:productId', async (req, res) => {
     }
 });
 
-// Æ¯Á¤ product¿¡ ¼Ò¼ÓµÈ ÇÏ³ªÀÇ variant Á¤º¸ °¡Á®¿À±â
+// íŠ¹ì • productì— ì†Œì†ëœ í•˜ë‚˜ì˜ variant ì •ë³´ ê°€ì ¸ì˜¤ê¸°
 router.get('/:productId/:variantId', async (req, res) => {
     try {
         const { productId, variantId } = req.params;
@@ -30,7 +30,7 @@ router.get('/:productId/:variantId', async (req, res) => {
     }
 });
 
-// »õ·Î¿î variant »ý¼º
+// ìƒˆë¡œìš´ variant ìƒì„±
 router.post('/', async (req, res) => {
     try {
         const { color, sizes, productId } = req.body;
@@ -42,7 +42,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-// ±âÁ¸ variant ¼öÁ¤
+// ê¸°ì¡´ variant ìˆ˜ì •
 router.put('/:variantId', async (req, res) => {
     try {
         const { variantId } = req.params;
@@ -59,7 +59,7 @@ router.put('/:variantId', async (req, res) => {
     }
 });
 
-// variant »èÁ¦
+// variant ì‚­ì œ
 router.delete('/:variantId', async (req, res) => {
     try {
         const { variantId } = req.params;

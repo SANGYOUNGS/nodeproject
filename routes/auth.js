@@ -10,28 +10,27 @@ router.post("/", async (req, res, next) => {
   const { name, email, password, phoneNumber } = req.body;
 
   try {
+    if (typeof name !== "string" || name.trim().length < 2) {
+      const error = new Error("이름은 2글자 이상이어야 합니다.");
+      error.statusCode = 400;
+      throw error;
+    }
 
-  if(typeof name !== 'string' || name.trim().length < 2 ) {
-    const error = new Error("이름은 2글자 이상이어야 합니다.");
-    error.statusCode = 400;
-    throw error;
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       const error = new Error("이메일 형식이 옳바르지 않습니다.");
       error.statusCode = 400;
       throw error;
     }
 
-    if(typeof password !== 'string' || password.length < 7) {
+    if (typeof password !== "string" || password.length < 7) {
       const error = new Error("비밀번호는 8자 이상이어야 합니다.");
       error.statusCode = 400;
       throw error;
     }
 
     const phoneRegex = /^\d{10,11}$/;
-    if(!phoneRegex.test(phoneNumber)) {
+    if (!phoneRegex.test(phoneNumber)) {
       const error = new Error("유효한 핸드폰 번호를 입력하세요.");
       error.statusCode = 400;
       throw error;
@@ -39,16 +38,14 @@ router.post("/", async (req, res, next) => {
 
     let user = await User.findOne({ email });
     if (user) {
-      return res
-        .status(400)
-        .json({message: "이미 등록된 이메일 입니다." });
+      return res.status(400).json({ message: "이미 등록된 이메일 입니다." });
     }
 
     user = new User({
       name,
       email,
       password,
-      phoneNumber
+      phoneNumber,
     });
 
     const salt = await bcrypt.genSalt(10);
@@ -59,17 +56,15 @@ router.post("/", async (req, res, next) => {
     res.json({ message: "Success" });
   } catch (err) {
     next(err);
-   }
+  }
 });
-
 
 // 로그인
 router.post("/login", async (req, res, next) => {
   try {
-
     const { email, password } = req.body;
 
-    if(!email || !password) {
+    if (!email || !password) {
       const error = new Error("이메일과 비밀번호를 입력하세요.");
       error.statusCode = 400;
       throw error;
@@ -82,7 +77,7 @@ router.post("/login", async (req, res, next) => {
       throw error;
     }
 
-    if(typeof password !== 'string' || password.length < 7) {
+    if (typeof password !== "string" || password.length < 7) {
       const error = new Error("비밀번호는 8자 이상이어야 합니다.");
       error.statusCode = 400;
       throw error;
@@ -134,7 +129,7 @@ router.post("/logout", async (req, res, next) => {
   try {
     res.clearCookie("adminCookie");
     res.clearCookie("userCookie");
-    res.status(200).send("성공적으로 로그아웃되었습니다.");
+    res.status(200).json({ message: "성공적으로 로그아웃되었습니다." });
   } catch (err) {
     next(err);
   }

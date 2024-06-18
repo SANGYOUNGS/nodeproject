@@ -1,7 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-// import cors from "cors";
 import cookieParser from "cookie-parser";
 import ordersRouter from "./routes/orders.js";
 import adminRouter from "./routes/admin.js";
@@ -10,7 +9,6 @@ import authRouter from "./routes/auth.js";
 import brandRouter from "./routes/brand.js";
 import categoryRouter from "./routes/category.js";
 import productRouter from "./routes/product.js";
-import guestsRouter from "./routes/guests.js";
 import variantRouter from "./routes/variant.js";
 
 dotenv.config();
@@ -34,12 +32,6 @@ const startServer = () => {
   });
 };
 
-// app.use(
-//   cors({
-//     origin: "http://localhost:5173",
-//     credentials: true,
-//   })
-// );
 app.use(cookieParser());
 app.use(express.json());
 
@@ -52,7 +44,6 @@ app.use("/api/users", usersRouter);
 app.use("/api/brand", brandRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/product", productRouter);
-app.use("/api/guests", guestsRouter);
 app.use("/api/variant", variantRouter);
 
 // 에러 핸들러

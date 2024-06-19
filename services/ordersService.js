@@ -17,6 +17,7 @@ const addOrder = async (customerId, items, name, address, phone) => {
       const variant = await Variant.findOne({ productId, color }).session(
         session
       );
+      console.log(variant);
       if (!variant) {
         throw new Error("해당 옵션을 찾을 수 없습니다.");
       }

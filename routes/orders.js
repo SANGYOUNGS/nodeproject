@@ -15,7 +15,6 @@ router.post("/", authenticationMiddleware, async (req, res) => {
     const order = await ordersService.addOrder(id, items, name, address, phone);
     res.status(201).json(order);
   } catch (err) {
-    console.log(err);
     res.status(500).send("서버 에러가 발생했습니다");
   }
 });

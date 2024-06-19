@@ -53,7 +53,7 @@ const orderSchema = new Schema({
   },
   phone: {
     type: String,
-    required: true,
+    required: false,
   },
   orderDate: {
     // 변경된 필드 이름

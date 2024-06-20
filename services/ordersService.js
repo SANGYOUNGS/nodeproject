@@ -82,10 +82,7 @@ const getAllOrders = async () => {
 
 const updateOrder = (id, address) => {
   Order.findById(id).then((order) => {
-    console.log(order);
     if (!order) {
-      console.log("hello");
-
       return res.json({ message: `주문을 찾을 수 없습니다.` });
     }
     if (order.orderState !== "주문완료") {

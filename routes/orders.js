@@ -50,7 +50,7 @@ router.put("/:id", authenticationMiddleware, async (req, res) => {
 });
 
 // 주문 삭제
-router.delete("/:id", authenticationMiddleware, checkRole, async (req, res) => {
+router.delete("/:id", authenticationMiddleware, async (req, res) => {
   const { id } = req.params;
 
   try {

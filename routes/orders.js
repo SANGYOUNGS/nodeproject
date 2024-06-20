@@ -39,11 +39,15 @@ router.get("/", authenticationMiddleware, async (req, res) => {
 // 주문 수정
 router.put("/:id", authenticationMiddleware, async (req, res) => {
   const { id } = req.params;
-  const { address } = req.body;
+  const { address, orderState } = req.body;
 
   try {
-    await ordersService.updateOrder(id, address);
-    res.status(200).json({ message: "배송지가 성공적으로 변경되었습니다." });
+    const result = await ordersService.updateOrder(id, address, orderState);
+    if (result.success) {
+      res.status(200).json({ message: result.message });
+    } else {
+      res.status(400).json({ message: result.message });
+    }
   } catch (err) {
     res.status(500).send("서버 에러가 발생했습니다");
   }

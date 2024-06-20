@@ -80,21 +80,29 @@ const getAllOrders = async () => {
   return orders;
 };
 
-const updateOrder = (id, address) => {
-  Order.findById(id).then((order) => {
+const updateOrder = async (id, address, orderState) => {
+  try {
+    const order = await Order.findById(id);
     if (!order) {
-      return res.json({ message: `주문을 찾을 수 없습니다.` });
+      return { message: "주문을 찾을 수 없습니다.", success: false };
     }
-    if (order.orderState !== "주문완료") {
-      return res.json({
-        message: `주문완료 상태에서만 배송지변경이 가능합니다.`,
-      });
+    if (orderState) {
+      order.orderState = orderState;
     }
-    order.address = address;
-    order.save();
-
-    return order;
-  });
+    if (address) {
+      if (order.orderState !== "주문완료") {
+        return {
+          message: "주문완료 상태에서만 배송지변경이 가능합니다.",
+          success: false,
+        };
+      }
+      order.address = address;
+    }
+    await order.save();
+    return { message: "주문이 성공적으로 변경되었습니다.", success: true };
+  } catch (error) {
+    throw new Error("주문 업데이트 실패");
+  }
 };
 
 const deleteOrder = async (id) => {

@@ -19,13 +19,13 @@ const productSchema = new Schema({
     description:{
         type: String
     },
-    longdescription:{
+    longdescription:{ // FB: camel case로
         type: String
     },
     price:{
         type: Number
     },
-    images: [{
+    images: [{ 
         type: String
     }]
 });

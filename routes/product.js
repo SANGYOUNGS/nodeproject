@@ -36,7 +36,7 @@ router.post('/', async (req, res) => {
         const { name, brand, category, description, longdescription, price, images } = req.body;
         
         // 브랜드와 카테고리가 유효한지 확인
-        const brandExists = await Brand.findById(brand);
+        const brandExists = await Brand.findById(brand); // FB: 제외
         const categoryExists = await Category.findById(category);
 
         const product = new Product({
@@ -82,7 +82,7 @@ router.delete('/:productId', async (req, res) => {
         }
         await Variant.deleteMany({ productId: deletedProduct._id });
 
-        res.status(200).json({ message: '제품이 성공적으로 삭제되었습니다.' });
+        res.status(200).json({ message: '제품이 성공적으로 삭제되었습니다.' }); // FB: status code 204
     } catch (error) {
         console.error('Error deleting product:', error);
         res.status(500).json({ message: '서버 오류로 인해 제품을 삭제할 수 없습니다.' });

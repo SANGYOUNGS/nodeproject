@@ -7,6 +7,8 @@ import Variant from '../models/schema/variant.js';
 
 const router = express.Router();
 
+// PATH: /api/products/:productId/variants/:variantId // FB: API를 이렇게 구성하면 좋을듯
+
 // 특정 product에 소속된 모든 variant들 가져오기
 router.get('/:productId', async (req, res) => {
     try {
@@ -19,7 +21,7 @@ router.get('/:productId', async (req, res) => {
 });
 
 // 특정 product에 소속된 하나의 variant 정보 가져오기
-router.get('/:productId/:variantId', async (req, res) => {
+router.get('/:productId/variants/:variantId', async (req, res) => {
     try {
         const { productId, variantId } = req.params;
         const variant = await Variant.findOne({ _id: variantId, productId });

@@ -48,13 +48,13 @@ const addOrder = async (customerId, items, name, address, phone) => {
     await order.save({ session });
 
     await session.commitTransaction();
-    session.endSession();
 
     return order;
   } catch (error) {
     await session.abortTransaction();
-    session.endSession();
     throw error;
+  } finally {
+    session.endSession();
   }
 };
 
@@ -101,7 +101,9 @@ const updateOrder = async (id, address, orderState) => {
     await order.save();
     return { message: "주문이 성공적으로 변경되었습니다.", success: true };
   } catch (error) {
-    throw new Error("주문 업데이트 실패");
+    throw new Error("주문 업데이트 실패", {
+      cause: error,
+    });
   }
 };
 

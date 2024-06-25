@@ -1,6 +1,6 @@
 import express from "express";
 import productService from "../services/adminService.js";
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 import Brand from "../models/schema/brand.js";
 import Category from "../models/schema/category.js";
 // import Order from "../models/schema/order.js" 추후 오더 구현시 사용
@@ -17,23 +17,23 @@ router.post(
   checkRole,
   async (req, res, next) => {
     try {
-      const { brand, category, ...productData } = req.body;
+      const { brandId, categoryId, ...productData } = req.body;
       // ObjectId 형식 검증
-      if (!mongoose.Types.ObjectId.isValid(brand)) {
+      if (!mongoose.Types.ObjectId.isValid(brandId)) {
         return res.status(400).json({ message: "브랜드를 찾을 수 없습니다" });
       }
-      if (!mongoose.Types.ObjectId.isValid(category)) {
+      if (!mongoose.Types.ObjectId.isValid(categoryId)) {
         return res.status(400).json({ message: "카테고리를 찾을수 없습니다." });
       }
 
       // 브랜드 ID 검증
-      const brandDoc = await Brand.findById(brand);
+      const brandDoc = await Brand.findById(brandId);
       if (!brandDoc) {
         return res.status(400).json({ message: "Invalid brand ID" });
       }
 
       // 카테고리 ID 검증
-      const categoryDoc = await Category.findById(category);
+      const categoryDoc = await Category.findById(categoryId);
       if (!categoryDoc) {
         return res.status(400).json({ message: "Invalid category ID" });
       }
@@ -44,7 +44,10 @@ router.post(
       }
 
       // 가격 검증
-      if (productData.price !== undefined && typeof productData.price !== "number") {
+      if (
+        productData.price !== undefined &&
+        typeof productData.price !== "number"
+      ) {
         return res.status(400).json({ message: "가격을 확인해주세요" });
       }
 
@@ -66,22 +69,41 @@ router.put(
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { name, price, description, brand, category, longdescription } = req.body;
+      const { name, price, description, brandId, categoryId, longdescription } =
+        req.body;
 
-      if (!mongoose.Types.ObjectId.isValid(brand)) {
-        return res.status(400).json({ message: "해당 브랜드를 찾을수 없습니다." });
+      if (!mongoose.Types.ObjectId.isValid(brandId)) {
+        return res
+          .status(400)
+          .json({ message: "해당 브랜드를 찾을수 없습니다." });
       }
-      if (!mongoose.Types.ObjectId.isValid(category)) {
-        return res.status(400).json({ message: "해당 카테고리를 찾을수 없습니다." });
+      if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+        return res
+          .status(400)
+          .json({ message: "해당 카테고리를 찾을수 없습니다." });
       }
 
-      if (!name || !price || !description || !brand || !category || !longdescription) {
+      if (
+        !name ||
+        !price ||
+        !description ||
+        !brandId ||
+        !categoryId ||
+        !longdescription
+      ) {
         const error = new Error("필수 입력항목을 확인해주세요.");
         error.statusCode = 400;
         throw error;
       }
 
-      const updatedProduct = await productService.updateProduct(id, { name, price, description, brand, category, longdescription});
+      const updatedProduct = await productService.updateProduct(id, {
+        name,
+        price,
+        description,
+        brand: brandId,
+        category: categoryId,
+        longdescription,
+      });
 
       if (!updatedProduct) {
         const error = new Error("상품을 찾을수 없습니다.");
@@ -95,7 +117,6 @@ router.put(
     }
   }
 );
-
 
 router.delete(
   "/products/:id",

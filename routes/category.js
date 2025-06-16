@@ -65,7 +65,7 @@ router.delete('/:categoryId', async (req, res) => {
     const { categoryId } = req.params;
     try {
         const products = await Product.find({ category: categoryId });
-        console.log(`Products linked to category ${categoryId}:`, products);
+        console.log(`Products linked to category ${categoryId}:`, products); // FB: 불필요한 console.log 삭제
         if (products.length > 0) {
             return res.status(400).json({ message: '이 카테고리와 연결된 제품이 있으므로 삭제할 수 없습니다.' });
         }

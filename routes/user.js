@@ -9,7 +9,6 @@ const router = express.Router();
 // 정보 조회
 router.get("/me", authenticationMiddleware, async (req, res, next) => {
   try {
-
     const user = await User.findById(res.locals.user.id).select("-password");
     if (!user) {
       return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
@@ -26,72 +25,90 @@ router.put("/user/me", authenticationMiddleware, async (req, res, next) => {
   const userId = res.locals.user.id;
 
   try {
-  if (!userId) {
-    const error = new Error("사용자를 찾을 수 없습니다.");
-    error.statusCode = 404;
-    return next(error);
-  }
+    if (!userId) {
+      const error = new Error("사용자를 찾을 수 없습니다.");
+      error.statusCode = 404;
+      return next(error);
+    }
 
-  //유효성검사
-  const { name, email, password, address, phoneNumber } = req.body;
+    //유효성검사
+    const { name, email, password, address, phoneNumber } = req.body;
 
-  const updateData = {};
+    if (name === undefined) {
+      const error = new Error("이름을 입력하세요.");
+      error.statusCode = 400;
+      throw error;
+    }
 
-  if(name !== undefined) {
-  if(typeof name === 'string' || name.trim().length >= 2 ) {
-    updateData.name = name;
-  } else {
-    const error = new Error("이름은 2글자 이상이어야 합니다.");
-    error.statusCode = 400;
-    throw error;
-  }
-}
-  if(email !== undefined) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (emailRegex.test(email)) {
-      updateData.email = email;
-    } else {
+    if (typeof name === "string" && name.trim().length < 2) {
+      const error = new Error("이름은 2글자 이상이어야 합니다.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if (email === undefined) {
+      const error = new Error("이메일을 입력하세요.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
       const error = new Error("이메일 형식이 옳바르지 않습니다.");
       error.statusCode = 400;
       throw error;
     }
-  }
 
-    if(password !== undefined) {
-    if(typeof password === 'string' && password.length > 7) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-      updateData.password = hashedPassword;
-    } else {
+    if (password === undefined) {
+      const error = new Error("비밀번호를 입력하세요.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if (typeof password === "string" && password.length <= 7) {
       const error = new Error("비밀번호는 8자 이상이어야 합니다.");
       error.statusCode = 400;
       throw error;
     }
-  }
 
-    if(address !== undefined) {
-    if(typeof address === 'string' && address.trim().length >= 5) {
-      updateData.address = address;
-    } else {
-      const error = new Error("유효한 주소를 입력하세요.");
+    if (address === undefined) {
+      const error = new Error("주소를 입력하세요.");
       error.statusCode = 400;
       throw error;
     }
-  }
 
-    if(phoneNumber !== undefined) {
+    if (typeof address === "string" && address.trim().length < 5) {
+      const error = new Error("주소는 최소 다섯 자리 이상입니다.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if (phoneNumber === undefined) {
+      const error = new Error("핸드폰 번호를 입력하세요.");
+      error.statusCode = 400;
+      throw error;
+    }
+
     const phoneRegex = /^\d{10,11}$/;
-    if(phoneRegex.test(phoneNumber)) {
-      updateData.phoneNumber = phoneNumber;
-    } else {
+    if (!phoneRegex.test(phoneNumber)) {
       const error = new Error("유효한 핸드폰 번호를 입력하세요.");
       error.statusCode = 400;
       throw error;
     }
-  }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const updateData = {
+      name,
+      email,
+      password: hashedPassword,
+      address,
+      phoneNumber,
+    };
 
     const updateUser = await User.findByIdAndUpdate(userId, updateData, {
-      new: true, runValidators: true,
+      new: true,
+      runValidators: true,
     });
 
     if (!updateUser) {
@@ -109,10 +126,7 @@ router.put("/user/me", authenticationMiddleware, async (req, res, next) => {
 });
 
 // 정보 삭제
-router.delete(
-  "/me", 
-  authenticationMiddleware, 
-  async (req, res, next) => {
+router.delete("/me", authenticationMiddleware, async (req, res, next) => {
   const userId = res.locals.user.id;
 
   if (!userId) {

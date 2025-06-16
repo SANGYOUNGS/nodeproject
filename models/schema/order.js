@@ -22,7 +22,7 @@ const orderSchema = new Schema({
     },
   ],
   customerId: {
-    type: String,
+    type: String,  // FB: ObjectId
     required: true,
   },
   name: {
@@ -47,6 +47,7 @@ const orderSchema = new Schema({
       },
       {
         _id: false,
+        versionKey: false, // FB: new Schema를 사용하면 __v 필드가 생기는데 이를 없애기 위해 versionKey: false를 추가
       }
     ),
     required: true,

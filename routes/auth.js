@@ -114,11 +114,11 @@ router.post("/login", async (req, res, next) => {
       res
         .cookie("adminCookie", token, cookieOptions)
         .json({ message: "로그인 성공!", token });
-    } else {
-      res
-        .cookie("userCookie", token, cookieOptions)
-        .json({ message: "로그인 성공!", token });
+      return;
     }
+    res
+      .cookie("userCookie", token, cookieOptions)
+      .json({ message: "로그인 성공!", token });
   } catch (err) {
     next(err);
   }

@@ -26,7 +26,7 @@ router.get("/", authenticationMiddleware, async (req, res) => {
 
   try {
     if (role == "admin") {
-      orders = await ordersService.getAllOrders();
+      orders = await ordersService.getAllOrders(); // FB: pagination
     } else {
       orders = await ordersService.getOrders(id);
     }

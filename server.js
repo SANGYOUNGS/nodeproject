@@ -26,7 +26,7 @@ const connectDB = async () => {
 };
 
 const startServer = () => {
-  const PORT = process.env.PORT || 8000;
+  const PORT = process.env.PORT ?? 8000;
   app.listen(PORT, () => {
     console.log(`http://localhost:${PORT} 에서 서버 실행중`);
   });
@@ -48,8 +48,8 @@ app.use("/api/variant", variantRouter);
 
 // 에러 핸들러
 app.use((err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
-  res.status(statusCode).json({ message: err.message || "server error" });
+  const statusCode = err.statusCode ?? 500;
+  res.status(statusCode).json({ message: err.message ?? "server error" });
 });
 
 const init = async () => {
